@@ -319,7 +319,7 @@ Section One (this section) provides a non-normative overview of the suite of spe
 
 ---
 
-# 2 OpenC2 Language Binding
+# 2. OpenC2 Language Binding
 
 _This section is normative_
 
@@ -327,8 +327,8 @@ This section defines the set of Actions, Targets, Specifiers, and Arguments that
 
 Extensions to the Language Specification are defined in accordance with [[OpenC2-Lang-v1.0]](#openc2-lang-v10), Section 3.1.5, where:
 
-1. The unique name of the SBOM schema is `oasis-open.org/openc2/v1.0/ap-SBOM`
-2. The namespace identifier (nsid) referring to the SBOM schema is:  `SBOM`
+1. The unique name of the SBOM schema is `oasis-open.org/openc2/v1.0/ap-sbom`
+2. The namespace identifier (nsid) referring to the SBOM schema is:  `sbom`
 3. The definitions of and conformance requirements for these types are contained in this document
 
 ## 2.1 OpenC2 Command Components
@@ -354,10 +354,6 @@ Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language
 | ID | Name | Description |
 | :--- | :--- | :--- |
 | 3 | **query** | Initiate a request for information. Used to communicate the supported options and determine the state or settings |
-| 6 | **deny** | Prevent traffic or access |
-| 8 | **allow** | Permit traffic or access |
-| 16 | **update** | Instructs the Actuator to update its configuration by retrieving and processing a configuration file and update |
-| 20 | **delete** | Remove an access rule |
 
 ### 2.1.2 Targets
 Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
@@ -372,23 +368,10 @@ Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification tha
 | ID | Name | Type | Description |
 | :--- | :--- | :--- | :--- |
 | 9 | **features** | Features | A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities |
-| 10 | **file** | File | Properties of a file |
-| 13 | **ipv4_net** | IPv4-Net | The representation of one or more IPv4 addresses expressed using CIDR notation |
-| 14 | **ipv6_net** | IPv6-Net | The representation of one or more IPv6 addresses expressed using CIDR notation |
-| 15 | **ipv4_connection** | IPv4-Connection | A network connection as specified by a five-tuple (IPv4) |
-| 16 | **ipv6_connection** | IPv6-Connection | A network connection as specified by a five-tuple (IPv6) |
+| 10 | **sbom** | Sbom | Properties of a SBOM |
 
 The semantics/ requirements as they pertain to common targets:
-* ipv4_connection
-    * If the protocol = ICMP, the five-tuple is: src_addr, dst_addr, icmp_type, icmp_code, protocol
-      where the ICMP types and codes are defined in [[RFC2780]](#rfc2780)
-    * If the protocol = TCP, UDP or SCTP, the five-tuple is: src_addr, src_port, dst_addr, dst_port, protocol
-    * For any other protocol, the five-tuple is: src_addr, unused, dst_addr, unused, protocol
-* ipv6_connection
-    * If the protocol = ICMP, the five-tuple is: src_addr, dst_addr, icmp_type, icmp_code, protocol
-      where the ICMP types and codes are defined in [[RFC4443]](#rfc4443)
-    * If the protocol = TCP, UDP or SCTP, the five-tuple is: src_addr, src_port, dst_addr, dst_port, protocol
-    * For any other protocol, the five-tuple is: src_addr, unused, dst_addr, unused, protocol
+* fill in if we have any
 
 #### 2.1.2.2 SBOM Targets
 The list of common Targets is extended to include the additional Targets defined in this section and referenced with the SBOM namespace.
@@ -399,7 +382,9 @@ The list of common Targets is extended to include the additional Targets defined
 
 | ID | Name | Type | Description |
 | :--- | :--- | :--- | :--- |
-| 1024 | **rule_number** | Rule-ID | Immutable identifier assigned when a rule is created. Identifies a rule to be deleted |
+| 1024 | **fillin** | Rule-ID | Immutable identifier assigned when a rule is created. Identifies a rule to be deleted |
+
+update per https://github.com/oasis-tcs/openc2-usecases/tree/master/Cybercom-Plugfest/TestData/sbom
 
 ### 2.1.3 Command Arguments
 Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.3-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.3-2 summarizes the Command Arguments that are defined in this specification.
@@ -413,10 +398,9 @@ Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#o
 
 | ID | Name | Type | # | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | **start_time** | Date-Time | 0..1 | The specific date/time to initiate the Action |
-| 2 | **stop_time** | Date-Time | 0..1 | The specific date/time to terminate the Action|
-| 3 | **duration** | Duration | 0..1 | The length of time for an Action to be in effect |
 | 4 | **response_requested** | Response-Type | 0..1 | The type of Response required for the Action: `none`, `ack`, `status`, `complete` |
+
+proposal to delete "none" as it doesn't make sense on either Query
 
 #### 2.1.3.2 SBOM Arguments
 The list of common Command Arguments is extended to include the additional Command Arguments defined in this section and referenced with the SBOM namespace.
@@ -427,45 +411,11 @@ The list of common Command Arguments is extended to include the additional Comma
 
 | ID | Name | Type | # | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| 1024 | **drop_process** | Drop-Process | 0..1 | Specifies how to handle denied packets |
-| 1025 | **persistent** | Boolean | 0..1 | Normal operations assume any changes to a device are to be implemented persistently. Setting the persistent modifier to FALSE results in a change that is not persistent in the event of a reboot or restart |
-| 1026 | **direction** | Direction | 0..1 | Specifies whether to apply rules to incoming or outgoing traffic. If omitted, rules are applied to both |
-| 1027 | **insert_rule** | Rule-ID | 0..1 | Specifies the identifier of the rule within a list, typically used in a top-down rule list |
-
-**_Type: Drop-Process (Enumerated)_**
-
-| ID | Name | Description |
-| :--- | :--- | :--- |
-| 1 | **none** | Drop the packet and do not send a notification to the source of the packet |
-| 2 | **reject** | Drop the packet and send an ICMP host unreachable (or equivalent) to the source of the packet |
-| 3 | **false_ack** | Drop the traffic and send a false acknowledgment |
-
-**_Type: Direction (Enumerated)_**
-
-| ID | Name | Description |
-| :--- | :--- | :--- |
-| 1 | **both** | Apply rules to all traffic |
-| 2 | **ingress** | Apply rules to incoming traffic only |
-| 3 | **egress** | Apply rules to outgoing traffic only |
-
-**_Type: Rule-ID_**
-
-| Type Name | Type | Description |
-| :--- | :--- | :--- |
-| **Rule-ID** | Integer | Access rule identifier |
+| n | **N** | N | 0..1 | need to add the sbom formats per plugfest examples |
 
 The semantics/requirements as they relate to SBOM arguments:
 
-* insert_rule:
-    * The value MUST be immutable - i.e., the identifier assigned to an access rule at creation must not change over the lifetime of that rule
-
-    * The value MUST be unique within the scope of an Openc2 Producer and an Openc2 Consumer- i.e., the value MUST map to exactly one deny <target> or allow <target> for a given instance of an SBOM
-
-* directionality:
-    * Entities that receive but do not support directionality MUST NOT reply with 200 OK and SHOULD return a 501 error code
-    * If absent or not explicitly set, then the Command MUST apply to both
-* drop_process:  If absent or not explicitly set, then the Actuator MUST NOT send any notification to the source of the packet
-* persistent:  If absent or not explicitly set, then the value is TRUE and any changes are persistent
+* fill in about the choice of formats and list order is preference order
 
 ### 2.1.4 Actuator Specifiers
 An Actuator is the entity that provides the functionality and performs the Action. The Actuator executes the Action on the Target. In the context of this profile, the Actuator is the SBOM and the presence of one or more Specifiers further refine which Actuator(s) shall execute the Action.
@@ -513,7 +463,7 @@ The list of common Response properties is extended to include the additional Res
 
 | ID | Name | Type | Description |
 | :--- | :--- | :--- | :--- |
-| 1024 | **rule_number** | Rule-ID | Rule identifier returned from allow or deny Command |
+| 1024 | **fillin** | fillin | fillin |
 
 ### 2.2.3 Response Status Codes
 Table 2.2.1-2 lists the Response Status Codes defined in the OpenC2 Language Specification that are applicable to SBOM.
