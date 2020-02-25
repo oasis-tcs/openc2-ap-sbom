@@ -91,7 +91,7 @@ The name "OASIS" is a trademark of [OASIS](https://www.oasis-open.org/), the own
         -   [2.1.4 Actuator Specifiers](#214-actuator-specifiers)
     -   [2.2 OpenC2 Response Components](#22-openc2-response-components)
         -   [2.2.1 Common Results](#221-common-results)
-        -   [2.2.2 SBOM Results](#222-SBOM-results)
+        -   [2.2.2 SBOM Results](#222-slpf-results)
         -   [2.2.3 Response Status Codes](#223-response-status-codes)
     -   [2.3 OpenC2 Commands](#23-openc2-commands)
         -   [2.3.1 Query](#233-query)
@@ -144,9 +144,6 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## 1.3 Normative References
 
-
-needs work
-
 ###### [RFC1123]
 Braden, R., Ed., "Requirements for Internet Hosts - Application and Support", STD 3, RFC 1123, DOI 10.17487/RFC1123, October 1989, <https://www.rfc-editor.org/info/rfc1123>.
 ###### [RFC2119]
@@ -163,8 +160,6 @@ Bray, T., Ed., "The JavaScript Object Notation (JSON) Data Interchange Format", 
 _Open Command and Control (OpenC2) Language Specification Version 1.0_. Edited by Jason Romano and Duncan Sparrell. November 2018, <http://docs.oasis-open.org/openc2/oc2ls/v1.0/oc2ls-v1.0.html>.
 
 ## 1.4 Non-Normative References
-
-needs work
 
 ###### [RFC3339]
 Klyne, G. and C. Newman, "Date and Time on the Internet: Timestamps", RFC 3339, DOI 10.17487/RFC3339, July 2002, <https://www.rfc-editor.org/info/rfc3339>.
@@ -197,8 +192,6 @@ The following color, font and font style conventions are used in this document:
 * Parts of the example may be omitted for conciseness and clarity. These omitted parts are denoted with ellipses (...).
 
 Example:
-
-redo example with sbom example
 
 ```json
 {
@@ -278,40 +271,36 @@ The goal of OpenC2 is to enable coordinated defense in cyber-relevant time betwe
 * **Extensible:**  While OpenC2 defines a core set of Actions and Targets for cyber defense, the language is expected to evolve with cyber defense technologies, and permits extensions to accommodate new cyber defense technologies.
 
 ## 1.8 Purpose and Scope
-A 'Software Bill of Materials' (SBOM) is a blah blah.
-All devices containing software SHOULD have a SBOM but it may or may not be accessible via OpenC2 command.
-Reasons for having an SBOM blah blah ref NTIA docs.
-An actuator with the functionality to return an SBOM via OpenC2 MUST conform to this specification.
-The scope of this profile is limited to actuators with SBOM capability, herein referred to as SBOM.
+A 'Stateless Packet Filter' (SLPF) is a policy enforcement mechanism that restricts or permits traffic based on static values such as source address, destination address, and/or port numbers. A Stateless Packet Filter does not consider traffic patterns, connection state, data flows, applications, or payload information. The scope of this profile is limited to Stateless Packet Filtering herein referred to as SLPF.
 
-This Actuator profile specifies the set of Actions, Targets, Specifiers, and Command Arguments that integrates SBOM functionality with the Open Command and Control (OpenC2) Command set. Through this Command set, cyber security orchestrators may gain visibility into and provide control over the SBOM functionality in a manner that is independent of the instance of the SBOM function.
+This Actuator profile specifies the set of Actions, Targets, Specifiers, and Command Arguments that integrates SLPF functionality with the Open Command and Control (OpenC2) Command set. Through this Command set, cyber security orchestrators may gain visibility into and provide control over the SLPF functionality in a manner that is independent of the instance of the SLPF function.
 
-All components, devices and systems that provide SBOM functionality will implement the OpenC2 Actions, Targets, Specifiers and Arguments identified as required in this document. Actions that are applicable, but not necessarily required, for SBOM will be identified as optional.
+All components, devices and systems that provide SLPF functionality will implement the OpenC2 Actions, Targets, Specifiers and Arguments identified as required in this document. Actions that are applicable, but not necessarily required, for SLPF will be identified as optional.
 
 The purpose of this document is to:
 
-* Identify the required and optional OpenC2 Actions for Actuators with SBOM functionality
-* Identify the required and optional Target types for each Action in the SBOM class of Actuators
-* Identify Actuator-Specifiers and Arguments for each Action/Target pair that are applicable and/or unique to the SBOM class of Actuators
-* Annotate each Action/Target pair with a justification and example, and provide sample OpenC2 Commands to a SBOM with corresponding Responses
+* Identify the required and optional OpenC2 Actions for Actuators with SLPF functionality
+* Identify the required and optional Target types for each Action in the SLPF class of Actuators
+* Identify Actuator-Specifiers and Arguments for each Action/Target pair that are applicable and/or unique to the SLPF class of Actuators
+* Annotate each Action/Target pair with a justification and example, and provide sample OpenC2 Commands to a SLPF with corresponding Responses
 
-This SBOM profile:
+This SLPF profile:
 
 * Does not define or implement Actions beyond those defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10)
 * Is consistent with Version 1.0 of the OpenC2 Language Specification
 
-Cyber defense systems that are utilizing OpenC2 may require the following components to implement the SBOM profile:
+Cyber defense systems that are utilizing OpenC2 may require the following components to implement the SLPF profile:
 
-* OpenC2 Producers: Devices that send Commands, receive Responses, and manage the execution of Commands involving one or more SBOM or other Actuators with SBOM capability. The OpenC2 Producer needs _a priori_ knowledge of which Commands the Actuator can process and execute, therefore must understand the profiles for any device that it intends to command
+* OpenC2 Producers: Devices that send Commands, receive Responses, and manage the execution of Commands involving one or more SLPF or other Actuators with SLPF capability. The OpenC2 Producer needs _a priori_ knowledge of which Commands the Actuator can process and execute, therefore must understand the profiles for any device that it intends to command
 * OpenC2 Consumers: Devices or instances that provide stateless packet filtering functions. Typically these are Actuators that execute the cyber defense function, but could be orchestrators (i.e., a device or instance that forwards Commands to the Actuator)
 
-Though cyber defense components, devices, systems and/or instances may implement multiple Actuator profiles, a particular OpenC2 Message may reference at most a single Actuator profile. The scope of this document is limited to SBOM.
+Though cyber defense components, devices, systems and/or instances may implement multiple Actuator profiles, a particular OpenC2 Message may reference at most a single Actuator profile. The scope of this document is limited to SLPF.
 
 This specification is organized into three major sections.
 
 Section One (this section) provides a non-normative overview of the suite of specifications that realize OpenC2. This section provides references as well as defines the scope and purpose of this specification.
 
-[Section Two](#2-openc2-language-binding) (normative) binds this particular profile to the OpenC2 Language Specification. Section Two enumerates the components of the language specification that are meaningful in the context of SBOM and defines components that are applicable to this distinct profile. Section Two also defines the Commands (i.e., the Action/Target pairs) that are permitted in the context of SBOM.
+[Section Two](#2-openc2-language-binding) (normative) binds this particular profile to the OpenC2 Language Specification. Section Two enumerates the components of the language specification that are meaningful in the context of SLPF and defines components that are applicable to this distinct profile. Section Two also defines the Commands (i.e., the Action/Target pairs) that are permitted in the context of SLPF.
 
 [Section Three](#3-conformance-statements) (normative) presents definitive criteria for conformance so that cyber security stakeholders can be assured that their products, instances and/or integrations are compatible with OpenC2.
 
@@ -323,31 +312,31 @@ Section One (this section) provides a non-normative overview of the suite of spe
 
 _This section is normative_
 
-This section defines the set of Actions, Targets, Specifiers, and Arguments that are meaningful in the context of an SBOM. This section also describes the appropriate format for the status and properties of a Response frame. This section is organized into three major subsections; Command Components, Response Components and Commands.
+This section defines the set of Actions, Targets, Specifiers, and Arguments that are meaningful in the context of an SLPF. This section also describes the appropriate format for the status and properties of a Response frame. This section is organized into three major subsections; Command Components, Response Components and Commands.
 
 Extensions to the Language Specification are defined in accordance with [[OpenC2-Lang-v1.0]](#openc2-lang-v10), Section 3.1.5, where:
 
-1. The unique name of the SBOM schema is `oasis-open.org/openc2/v1.0/ap-SBOM`
-2. The namespace identifier (nsid) referring to the SBOM schema is:  `SBOM`
+1. The unique name of the SLPF schema is `oasis-open.org/openc2/v1.0/ap-slpf`
+2. The namespace identifier (nsid) referring to the SLPF schema is:  `slpf`
 3. The definitions of and conformance requirements for these types are contained in this document
 
 ## 2.1 OpenC2 Command Components
-The components of an OpenC2 Command include Actions, Targets, Actuators and associated Arguments and Specifiers. Appropriate aggregation of the components will define a Command-body that is meaningful in the context of an SBOM.
+The components of an OpenC2 Command include Actions, Targets, Actuators and associated Arguments and Specifiers. Appropriate aggregation of the components will define a Command-body that is meaningful in the context of an SLPF.
 
 This specification identifies the applicable components of an OpenC2 Command. The components of an OpenC2 Command include:
 
-* Action:  A subset of the Actions defined in the OpenC2 Language Specification that are meaningful in the context of a SBOM.
+* Action:  A subset of the Actions defined in the OpenC2 Language Specification that are meaningful in the context of a SLPF.
     * This profile SHALL NOT define Actions that are external to Version 1.0 of the [OpenC2 Language Specification](#openc2-lang-v10)
-    * This profile MAY augment the definition of the Actions in the context of a SBOM
+    * This profile MAY augment the definition of the Actions in the context of a SLPF
     * This profile SHALL NOT define Actions in a manner that is inconsistent with version 1.0 of the OpenC2 Language Specification
-* Target:  A subset of the Targets and Target-Specifiers defined in Version 1.0 of the OpenC2 Language Specification that are meaningful in the context of SBOM and one Target (and its associated Specifier) that is defined in this specification
+* Target:  A subset of the Targets and Target-Specifiers defined in Version 1.0 of the OpenC2 Language Specification that are meaningful in the context of SLPF and one Target (and its associated Specifier) that is defined in this specification
 * Arguments:  A subset of the Arguments defined in the Language Specification and a set of Arguments defined in this specification
-* Actuator:  A set of specifiers defined in this specification that are meaningful in the context of SBOM
+* Actuator:  A set of specifiers defined in this specification that are meaningful in the context of SLPF
 
 ### 2.1.1 Actions
-Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language Specification which are meaningful in the context of an SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
+Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language Specification which are meaningful in the context of an SLPF. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
 
-**Table 2.1.1-1. Actions Applicable to SBOM**
+**Table 2.1.1-1. Actions Applicable to SLPF**
 
 **_Type: Action (Enumerated)_**
 
@@ -360,12 +349,12 @@ Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language
 | 20 | **delete** | Remove an access rule |
 
 ### 2.1.2 Targets
-Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
+Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SLPF functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
 
 #### 2.1.2.1 Common Targets
-Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification that are applicable to SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
+Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification that are applicable to SLPF. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
 
-**Table 2.1.2-1. Targets Applicable to SBOM**
+**Table 2.1.2-1. Targets Applicable to SLPF**
 
 **_Type: Target (Choice)_**
 
@@ -390,10 +379,10 @@ The semantics/ requirements as they pertain to common targets:
     * If the protocol = TCP, UDP or SCTP, the five-tuple is: src_addr, src_port, dst_addr, dst_port, protocol
     * For any other protocol, the five-tuple is: src_addr, unused, dst_addr, unused, protocol
 
-#### 2.1.2.2 SBOM Targets
-The list of common Targets is extended to include the additional Targets defined in this section and referenced with the SBOM namespace.
+#### 2.1.2.2 SLPF Targets
+The list of common Targets is extended to include the additional Targets defined in this section and referenced with the slpf namespace.
 
-**Table 2.1.2-2. Targets Unique to SBOM**
+**Table 2.1.2-2. Targets Unique to SLPF**
 
 **_Type: Target (Choice)_**
 
@@ -402,12 +391,12 @@ The list of common Targets is extended to include the additional Targets defined
 | 1024 | **rule_number** | Rule-ID | Immutable identifier assigned when a rule is created. Identifies a rule to be deleted |
 
 ### 2.1.3 Command Arguments
-Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.3-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.3-2 summarizes the Command Arguments that are defined in this specification.
+Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.3-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SLPF functionality. Table 2.1.3-2 summarizes the Command Arguments that are defined in this specification.
 
 #### 2.1.3.1 Common Arguments
-Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
+Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SLPF.
 
-**Table 2.1.3-1. Command Arguments applicable to SBOM**
+**Table 2.1.3-1. Command Arguments applicable to SLPF**
 
 **_Type: Args (Map)_**
 
@@ -418,10 +407,10 @@ Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#o
 | 3 | **duration** | Duration | 0..1 | The length of time for an Action to be in effect |
 | 4 | **response_requested** | Response-Type | 0..1 | The type of Response required for the Action: `none`, `ack`, `status`, `complete` |
 
-#### 2.1.3.2 SBOM Arguments
-The list of common Command Arguments is extended to include the additional Command Arguments defined in this section and referenced with the SBOM namespace.
+#### 2.1.3.2 SLPF Arguments
+The list of common Command Arguments is extended to include the additional Command Arguments defined in this section and referenced with the slpf namespace.
 
-**Table 2.1.3-2. Command Arguments Unique to SBOM**
+**Table 2.1.3-2. Command Arguments Unique to SLPF**
 
 **_Type: Args (Map)_**
 
@@ -454,12 +443,12 @@ The list of common Command Arguments is extended to include the additional Comma
 | :--- | :--- | :--- |
 | **Rule-ID** | Integer | Access rule identifier |
 
-The semantics/requirements as they relate to SBOM arguments:
+The semantics/requirements as they relate to SLPF arguments:
 
 * insert_rule:
     * The value MUST be immutable - i.e., the identifier assigned to an access rule at creation must not change over the lifetime of that rule
 
-    * The value MUST be unique within the scope of an Openc2 Producer and an Openc2 Consumer- i.e., the value MUST map to exactly one deny <target> or allow <target> for a given instance of an SBOM
+    * The value MUST be unique within the scope of an Openc2 Producer and an Openc2 Consumer- i.e., the value MUST map to exactly one deny <target> or allow <target> for a given instance of an SLPF
 
 * directionality:
     * Entities that receive but do not support directionality MUST NOT reply with 200 OK and SHOULD return a 501 error code
@@ -468,22 +457,22 @@ The semantics/requirements as they relate to SBOM arguments:
 * persistent:  If absent or not explicitly set, then the value is TRUE and any changes are persistent
 
 ### 2.1.4 Actuator Specifiers
-An Actuator is the entity that provides the functionality and performs the Action. The Actuator executes the Action on the Target. In the context of this profile, the Actuator is the SBOM and the presence of one or more Specifiers further refine which Actuator(s) shall execute the Action.
+An Actuator is the entity that provides the functionality and performs the Action. The Actuator executes the Action on the Target. In the context of this profile, the Actuator is the SLPF and the presence of one or more Specifiers further refine which Actuator(s) shall execute the Action.
 
-Table 2.1.4-1 lists the Specifiers that are applicable to the SBOM Actuator. [Annex A](#annex-a-sample-commands) provides sample Commands with the use of Specifiers.
+Table 2.1.4-1 lists the Specifiers that are applicable to the SPLF Actuator. [Annex A](#annex-a-sample-commands) provides sample Commands with the use of Specifiers.
 
-The Actuator Specifiers defined in this document are referenced under the SBOM namespace.
+The Actuator Specifiers defined in this document are referenced under the slpf namespace.
 
-**Table 2.1.4-1. SBOM Specifiers**
+**Table 2.1.4-1. SLPF Specifiers**
 
 **_Type: Specifiers (Map)_**
 
 | ID | Name | Type | # | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | **hostname** | String | 0..1 | [[RFC1123]](#rfc1123) hostname (can be a domain name or IP address) for a particular device with SBOM functionality |
-| 2 | **named_group** | String | 0..1 | User defined collection of devices with SBOM functionality |
-| 3 | **asset_id** | String | 0..1 | Unique identifier for a particular SBOM |
-| 4 | **asset_tuple** | String | 0..10 | Unique tuple identifier for a particular SBOM consisting of a list of up to 10 strings |
+| 1 | **hostname** | String | 0..1 | [[RFC1123]](#rfc1123) hostname (can be a domain name or IP address) for a particular device with SLPF functionality |
+| 2 | **named_group** | String | 0..1 | User defined collection of devices with SLPF functionality |
+| 3 | **asset_id** | String | 0..1 | Unique identifier for a particular SLPF |
+| 4 | **asset_tuple** | String | 0..10 | Unique tuple identifier for a particular SLPF consisting of a list of up to 10 strings |
 
 ## 2.2 OpenC2 Response Components
 Response messages originate from the Actuator as a result of a Command.
@@ -491,9 +480,9 @@ Response messages originate from the Actuator as a result of a Command.
 Responses associated with required Actions MUST be implemented. Implementations that include optional Actions MUST implement the RESPONSE associated with the implemented Action. Additional details regarding the Command and associated Response are captured in [Section 2.3](#23-openc2-commands). Examples are provided in [Annex A](#annex-a-sample-commands).
 
 ### 2.2.1 Common Results
-Table 2.2.1-1 lists the Response Results properties defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
+Table 2.2.1-1 lists the Response Results properties defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SLPF.
 
-**Table 2.2.1-1. Response Results Applicable to SBOM**
+**Table 2.2.1-1. Response Results Applicable to SLPF**
 
 **_Type: Results (Map [1..*])_**
 
@@ -504,10 +493,10 @@ Table 2.2.1-1 lists the Response Results properties defined in the [[OpenC2-Lang
 | 3 | **pairs** | Action-Targets | 0..* | List of targets applicable to each supported Action |
 | 4 | **rate_limit** | Number | 0..1 | Maximum number of requests per minute supported by design or policy |
 
-### 2.2.2 SBOM Results
-The list of common Response properties is extended to include the additional Response properties defined in this section and referenced with the SBOM namespace.
+### 2.2.2 SLPF Results
+The list of common Response properties is extended to include the additional Response properties defined in this section and referenced with the slpf namespace.
 
-**Table 2.2.2-1. SBOM Results**
+**Table 2.2.2-1. SLPF Results**
 
 **_Type: OpenC2-Response (Map)_**
 
@@ -516,7 +505,7 @@ The list of common Response properties is extended to include the additional Res
 | 1024 | **rule_number** | Rule-ID | Rule identifier returned from allow or deny Command |
 
 ### 2.2.3 Response Status Codes
-Table 2.2.1-2 lists the Response Status Codes defined in the OpenC2 Language Specification that are applicable to SBOM.
+Table 2.2.1-2 lists the Response Status Codes defined in the OpenC2 Language Specification that are applicable to SLPF.
 
 **Table 2.2.1-2. Response Status Codes**
 
@@ -534,7 +523,7 @@ Table 2.2.1-2 lists the Response Status Codes defined in the OpenC2 Language Spe
 
 An OpenC2 Command consists of an Action/Target pair and associated Specifiers and Arguments. This section enumerates the allowed Commands and presents the associated Responses.
 
-Table 2.3-1 defines the Commands that are valid in the context of the SBOM profile. An Action (the top row in Table 2.3-1) paired with a Target (the first column in Table 2.3-1) defines a valid Command. The subsequent subsections provide the property tables applicable to each OpenC2 Command.
+Table 2.3-1 defines the Commands that are valid in the context of the SLPF profile. An Action (the top row in Table 2.3-1) paired with a Target (the first column in Table 2.3-1) defines a valid Command. The subsequent subsections provide the property tables applicable to each OpenC2 Command.
 
 **Table 2.3-1. Command Matrix**
 
@@ -547,9 +536,9 @@ Table 2.3-2 defines the Command Arguments that are allowed for a particular Comm
 
 **Table 2.3-2. Command Arguments Matrix**
 
-|   | Allow _target_ | Deny _target_ | Query features | Delete SBOM:rule_number | Update file |
+|   | Allow _target_ | Deny _target_ | Query features | Delete slpf:rule_number | Update file |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **response_requested** | [2.3.1](#231-allow) | [2.3.2](#232-deny) | [2.3.3.1](#2331-query-features) | [2.3.4.1](#2341-delete-SBOMrule_number) | [2.3.5.1](#2351-update-file) |
+| **response_requested** | [2.3.1](#231-allow) | [2.3.2](#232-deny) | [2.3.3.1](#2331-query-features) | [2.3.4.1](#2341-delete-slpfrule_number) | [2.3.5.1](#2351-update-file) |
 add stuff for sbom
 
 ### 2.3.1 Query
@@ -617,7 +606,7 @@ _This section is non-normative_
 
 Editor's note - update per https://github.com/oasis-tcs/openc2-usecases/tree/master/Cybercom-Plugfest/TestData/sbom
 
-This section will summarize and provide examples of OpenC2 Commands as they pertain to SBOM firewalls. The sample Commands will be encoded in verbose JSON, however other encodings are possible provided the Command is validated against the property tables defined in [Section 2](#2-openc2-language-binding) of this specification. Examples of corresponding Responses are provided where appropriate.
+This section will summarize and provide examples of OpenC2 Commands as they pertain to SLPF firewalls. The sample Commands will be encoded in verbose JSON, however other encodings are possible provided the Command is validated against the property tables defined in [Section 2](#2-openc2-language-binding) of this specification. Examples of corresponding Responses are provided where appropriate.
 
 The samples provided in this section are for illustrative purposes only and are not to be interpreted as operational examples for actual systems.
 
@@ -641,7 +630,7 @@ The examples include Integer Date-Time fields; the conversion of Integer values 
 Deny and allow can be treated as mathematical complements of each other. Unless otherwise stated, the example Targets, Specifiers, Arguments and corresponding Responses are applicable to both Actions.
 
 ### A.1.1 Deny a particular connection
-Block a particular connection within the domain and do not send a host unreachable. Note, the "SBOM":{"drop_process"} argument does not apply to the allow Action.
+Block a particular connection within the domain and do not send a host unreachable. Note, the "slpf":{"drop_process"} argument does not apply to the allow Action.
 
 **Command:**
 
@@ -661,12 +650,12 @@ Block a particular connection within the domain and do not send a host unreachab
     "start_time": 1534775460000,
     "duration": 500,
     "response_requested": "ack",
-    "SBOM": {
+    "slpf": {
        "drop_process": "none"
        }
   },
   "actuator": {
-        "SBOM": {
+        "slpf": {
             "asset_id": "30"
         }
     }
@@ -682,7 +671,7 @@ Block a particular connection within the domain and do not send a host unreachab
 ```
 
 ### A.1.2 Deny all outbound ftp transfers
-Block all outbound ftp data transfers, send false acknowledgment. Note that the five-tuple is incomplete. Note that the response_requested field was not populated therefore will be 'complete'. Also note that the Actuator called out was SBOM with no additional Specifiers, therefore all endpoints that can execute the Command should. Note, the "SBOM":{"drop_process"} argument does not apply to the allow Action.
+Block all outbound ftp data transfers, send false acknowledgment. Note that the five-tuple is incomplete. Note that the response_requested field was not populated therefore will be 'complete'. Also note that the Actuator called out was SLPF with no additional Specifiers, therefore all endpoints that can execute the Command should. Note, the "slpf":{"drop_process"} argument does not apply to the allow Action.
 
 **Command:**
 
@@ -696,13 +685,13 @@ Block all outbound ftp data transfers, send false acknowledgment. Note that the 
     }
   },
   "args": {
-    "SBOM": {
+    "slpf": {
       "drop_process": "false_ack",
       "direction": "egress"
     }
   },
   "actuator": {
-    "SBOM": {}
+    "slpf": {}
   }
 }
 ```
@@ -747,12 +736,12 @@ Block all inbound traffic from the specified ipv6 network and do not respond. In
   },
   "args": {
     "response_requested": "none",
-    "SBOM": {
+    "slpf": {
       "direction": "ingress"
     }
   },
   "actuator": {
-    "SBOM": {
+    "slpf": {
       "named_group": "perimeter"
     }
   }
@@ -776,7 +765,7 @@ Permit ftp data transfers to 3ffe:1900:4545:3::f8ff:fe21:67cf from any source. (
     }
   },
   "actuator": {
-    "SBOM": {}
+    "slpf": {}
   }
 }
 ```
@@ -789,7 +778,7 @@ In this case the Actuator returned a rule number associated with the allow.
 {
   "status": 200,
   "results": {
-    "SBOM": {
+    "slpf": {
       "rule_number": 1234
     }
   }
@@ -797,7 +786,7 @@ In this case the Actuator returned a rule number associated with the allow.
 ```
 
 ## A.2 Delete Rule
-Used to remove a firewall rule rather than issue an allow or deny to counteract the effect of an existing rule. Implementation of the 'delete SBOM:rule_number' Command is OPTIONAL.
+Used to remove a firewall rule rather than issue an allow or deny to counteract the effect of an existing rule. Implementation of the 'delete slpf:rule_number' Command is OPTIONAL.
 
 In this case the rule number assigned in a previous allow will be removed (refer to the final example in [Annex A.1](#a1-deny-and-allow)
 
@@ -807,13 +796,13 @@ In this case the rule number assigned in a previous allow will be removed (refer
 {
   "action": "delete",
   "target": {
-    "SBOM:rule_number": 1234
+    "slpf:rule_number": 1234
   },
   "args": {
     "response_requested": "complete"
   },
   "actuator": {
-    "SBOM": {}
+    "slpf": {}
   }
 }
 ```
@@ -835,7 +824,7 @@ Instructs the firewalls to acquire a new configuration file. Note that all netwo
     }
   },
   "actuator": {
-    "SBOM": {
+    "slpf": {
       "named_group": "network"
     }
   }
@@ -940,14 +929,14 @@ This Command queries the Actuator to determine both the language versions and th
 
 **Response:**
 
-The Actuator device is apparently a smart front-door-lock for which an extension profile has been written. The device supports both the standard SBOM functions and whatever Commands are defined in the extension profile.
+The Actuator device is apparently a smart front-door-lock for which an extension profile has been written. The device supports both the standard slpf functions and whatever Commands are defined in the extension profile.
 
 ```json
 {
   "status": 200,
   "results": {
     "versions": ["1.3"],
-    "profiles": ["SBOM", "iot-front-door-lock"]
+    "profiles": ["slpf", "iot-front-door-lock"]
   }
 }
 ```
@@ -980,7 +969,7 @@ The Actuator supports all Action/Target pairs shown in Table 2.3-1 - Command Mat
       "allow": ["ipv6_net", "ipv6_connection"],
       "deny": ["ipv6_net", "ipv6_connection"],
       "query": ["features"],
-      "delete": ["SBOM:rule_number"],
+      "delete": ["slpf:rule_number"],
       "update": ["file"]
     }
   }
