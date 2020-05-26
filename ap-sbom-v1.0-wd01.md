@@ -162,15 +162,48 @@ Extensions to the Language Specification are defined in accordance with [[OpenC2
 2. The namespace identifier (nsid) referring to the SBOM schema is:  `sbom`
 3. The definitions of and conformance requirements for these types are contained in this document
 
+Example JSON command:
+```
+  {
+    "action": "query",
+    "target": {
+      "features": ["sbom"]
+      },
+    "args": {
+      "sbom_type": ["cyclonedx", "spdx", "swid", "uri"]
+    }
+  }
+```
+alternately depending on whether target_specifier and args added to language
+
+```
+  {
+    "action": "query",
+    "target": {
+      "features": ["sbom:sbom"]
+      },
+    "args": {
+      "sbom": {
+          sbom_type": ["cyclonedx", "spdx", "swid", "uri"]
+        }
+    }
+  }
+```
+
+
+
+EDITOR's Note:
+update per https://github.com/oasis-tcs/openc2-usecases/tree/master/Cybercom-Plugfest/TestData/sbom
+
 ## 2.1 OpenC2 Command Components
 The components of an OpenC2 Command include Actions, Targets, Actuators and associated Arguments and Specifiers. Appropriate aggregation of the components will define a Command-body that is meaningful in the context of an SBOM.
 
 This specification identifies the applicable components of an OpenC2 Command. The components of an OpenC2 Command include:
 
 * Action:  A subset of the Actions defined in the OpenC2 Language Specification that are meaningful in the context of a SBOM.
-    * This profile SHALL NOT define Actions that are external to Version 1.0 of the [OpenC2 Language Specification](#openc2-lang-v10)
-    * This profile MAY augment the definition of the Actions in the context of a SBOM
-    * This profile SHALL NOT define Actions in a manner that is inconsistent with version 1.0 of the OpenC2 Language Specification
+    * This profile, or any extensions to it, SHALL NOT define Actions that are external to Version 1.0 of the [OpenC2 Language Specification](#openc2-lang-v10)
+    * This profile, or any extensions to it, SHALL NOT define Actions in a manner that is inconsistent with version 1.0 of the OpenC2 Language Specification
+    * This profile, or any extensions to it, MAY augment the definition of the Actions in the context of a SBOM
 * Target:  A subset of the Targets and Target-Specifiers defined in Version 1.0 of the OpenC2 Language Specification that are meaningful in the context of SBOM and one Target (and its associated Specifier) that is defined in this specification
 * Arguments:  A subset of the Arguments defined in the Language Specification and a set of Arguments defined in this specification
 * Actuator:  A set of specifiers defined in this specification that are meaningful in the context of SBOM
@@ -187,9 +220,8 @@ Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language
 | 3 | **query** | Initiate a request for information. Used to communicate the supported options and determine the state or settings |
 
 ### 2.1.2 Targets
-Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
+Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.1]](#openc2-lang-v11) as they relate to SBOM functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
 
-#### 2.1.2.1 Common Targets
 Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification that are applicable to SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
 
 **Table 2.1.2-1. Targets Applicable to SBOM**
@@ -199,28 +231,24 @@ Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification tha
 | ID | Name | Type | Description |
 | :--- | :--- | :--- | :--- |
 | 9 | **features** | Features | A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities |
-| 10 | **sbom** | Sbom | Properties of a SBOM |
 
 The semantics/ requirements as they pertain to common targets:
 * fill in if we have any
 
-#### 2.1.2.2 SBOM Targets
-The list of common Targets is extended to include the additional Targets defined in this section and referenced with the SBOM namespace.
+The SBOM Actuator Profile does not extend Targets
+EDITOR's Note: Depending on whether target_specifier sbom added to language, AP may extend specifier.
 
-**Table 2.1.2-2. Targets Unique to SBOM**
+### 2.1.3 Target Specifiers
+The SBOM AP extends the Feature table 3.4.2.4 in the Language Spec to add a fifth feature:
 
-**_Type: Target (Choice)_**
+| ID | Name | Description |
+| :--- | :--- | :--- |
+| 5 | **sbom** | for requesting an SBOM be returned |
 
-| ID | Name | Type | Description |
-| :--- | :--- | :--- | :--- |
-| 1024 | **fillin** | Rule-ID | Immutable identifier assigned when a rule is created. Identifies a rule to be deleted |
+### 2.1.4 Command Arguments
+Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.4-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.4-2 summarizes the Command Arguments that are defined in this specification.
 
-update per https://github.com/oasis-tcs/openc2-usecases/tree/master/Cybercom-Plugfest/TestData/sbom
-
-### 2.1.3 Command Arguments
-Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.3-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.3-2 summarizes the Command Arguments that are defined in this specification.
-
-#### 2.1.3.1 Common Arguments
+#### 2.1.4.1 Common Arguments
 Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
 
 **Table 2.1.3-1. Command Arguments applicable to SBOM**
@@ -242,7 +270,10 @@ The list of common Command Arguments is extended to include the additional Comma
 
 | ID | Name | Type | # | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| n | **N** | N | 0..1 | need to add the sbom formats per plugfest examples |
+| 1 | **cyclonedx** | text | 0..1 | cyclonedx |
+| 2 | **spdx** | text | 0..1 | spdx |
+| 3 | **swid** | text | 0..1 | swid |
+| 4 | **uri** | text | 0..1 | uri |
 
 The semantics/requirements as they relate to SBOM arguments:
 
@@ -250,6 +281,10 @@ The semantics/requirements as they relate to SBOM arguments:
 
 ### 2.1.4 Actuator Specifiers
 An Actuator is the entity that provides the functionality and performs the Action. The Actuator executes the Action on the Target. In the context of this profile, the Actuator is the SBOM and the presence of one or more Specifiers further refine which Actuator(s) shall execute the Action.
+
+EDITOR's NOTE: Does above make sense for SBOM? Is it really an actuator or is a feature of a device?
+The issue will be when there are multiple AP's on a device - we are requesting sbom of device,
+not separate sboms per "function" (ie actuator)
 
 Table 2.1.4-1 lists the Specifiers that are applicable to the SBOM Actuator. [Annex A](#annex-a-sample-commands) provides sample Commands with the use of Specifiers.
 
