@@ -6,7 +6,7 @@
 
 ## Committee Specification Draft 01 /<br>Public Review Draft 01
 
-## 13 December 2019
+## 13 May 2020
 
 #### Technical Committee:
 [OASIS Open Command and Control (OpenC2) TC](https://www.oasis-open.org/committees/openc2/)
@@ -19,21 +19,22 @@ Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfra
 Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
 
 #### Additional artifacts:
-This prose specification is one component of a Work Product that also includes:
-* XML schemas: (list file names or directory name)
-* Other parts (list titles and/or file names)
-* `(Note: Any normative computer language definitions that are part of the Work Product, such as XML instances, schemas and Java(TM) code, including fragments of such, must be (a) well formed and valid, (b) provided in separate plain text files, (c) referenced from the Work Product; and (d) where any definition in these separate files disagrees with the definition found in the specification, the definition in the separate file prevails. Remove this note before submitting for publication.)`
+None
 
 #### Related work:
 This specification is related to:
 * _Open Command and Control (OpenC2) Language Specification Version 1.0_. Edited by Jason Romano and Duncan Sparrell. Latest stage: https://docs.oasis-open.org/openc2/oc2ls/v1.0/oc2ls-v1.0.html.
+* _Community-Drafted Documents on Software Bill of Materials_. https://www.ntia.gov/sbom
 * Software Package Data eXchange (SPDX®). https://spdx.github.io/spdx-spec/.
 * Software Identification (SWID). ISO/IEC 19770-2:2015. https://webstore.ansi.org/RecordDetail.aspx?sku=ISO%2fIEC+19770-2%3a2015.
+* CycloneDX. https://cyclonedx.org/
 
 #### Abstract:
 Open Command and Control (OpenC2) is a concise and extensible language to enable the command and control of cyber defense components, subsystems and/or systems in a manner that is agnostic of the underlying products, technologies, transport mechanisms or other aspects of the implementation. Software Bill of Materials (SBoM) is an emerging set of standards for identifying and listing software components, information about those components, and supply chain relationships between them. This profile defines the Actions, Targets, Specifiers and Options that are consistent with the version 1.0 of the OpenC2 Language Specification ([OpenC2-Lang-v1.0]) in the context of Software Bill of Materials retrieval.
 
 #### Status:
+_Editor's Note - This is a working Draft_
+
 This document was last revised or approved by the OASIS Open Command and Control (OpenC2) TC on the above date. The level of approval is also listed above. Check the "Latest stage" location noted above for possible later revisions of this document. Any other numbered Versions and other technical work produced by the Technical Committee (TC) are listed at https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=openc2#technical.
 
 TC members should send comments on this specification to the TC's email list. Others should send comments to the TC's public comment list, after subscribing to it by following the instructions at the "Send A Comment" button on the TC's web page at https://www.oasis-open.org/committees/openc2/.
@@ -56,7 +57,7 @@ When referencing this specification the following citation format should be used
 
 **[OpenC2-SBOM-v1.0]**
 
-_Open Command and Control (OpenC2) Profile for Software Bill of Materials Retrieval Version 1.0_. Edited by Duncan Sparrell. 13 December 2019. OASIS Committee Specification Draft 01 / Public Review Draft 01. https://docs.oasis-open.org/openc2/ap-sbom/v1.0/csprd01/ap-sbom-v1.0-csprd01.html. Latest stage: https://docs.oasis-open.org/openc2/ap-sbom/v1.0/ap-sbom-v1.0.html.
+_Open Command and Control (OpenC2) Profile for Software Bill of Materials Retrieval Version 1.0_. Edited by Duncan Sparrell. 26 May 2020. OASIS Committee Specification Draft 01 / Public Review Draft 01. https://docs.oasis-open.org/openc2/ap-sbom/v1.0/csprd01/ap-sbom-v1.0-csprd01.html. Latest stage: https://docs.oasis-open.org/openc2/ap-sbom/v1.0/ap-sbom-v1.0.html.
 
 -------
 
@@ -87,6 +88,34 @@ The name "OASIS" is a trademark of [OASIS](https://www.oasis-open.org/), the own
 -------
 
 # 1 Introduction
+
+_The content in this section is non-normative, except where it is marked normative._
+
+This document is the specification for
+the OpenC2 actuator profile
+of a device with the
+capability to return a Software Bill Of Materials (SBOM) when queried.
+
+OpenC2 is a suite of specifications
+that enables command and control of cyber defense systems and components.
+OpenC2 typically uses a request-response paradigm
+where a _Command_ is encoded by a _Producer_ (managing application)
+and transferred to a _Consumer_ (managed device or virtualized function)
+using a secure transfer protocol,
+and the Consumer can respond with status and any requested information.
+
+OpenC2 allows the application producing the commands
+to discover the set of capabilities supported
+by the managed devices.
+These capabilities permit the managing application
+to adjust its behavior to take advantage of the features exposed by the managed device.
+The capability definitions can be easily extended in a noncentralized manner,
+allowing standard and non-standard capabilities to be defined with semantic and syntactic rigor.
+
+
+-------
+
+Editor's Note: This following is from the intial OASIS baseline documents and should be removed prior to approval. It reamins for now as reminders for the editors.
 
 The text in this section may all be replaced, but the following three sections (1.1, 1.2, and 1.3) are required for OASIS publications. Section 1.1 (IPR Policy) must not be changed by the TC. Section 1.2 (Terminology) may be modified to include other terminology-related information used in this specification. Section 1.3 (Normative References) should be modified to include additional references, as needed. Section 1.4 (Non-Normative References) is not required, but should be modified to include additional references, as needed.
 
@@ -186,7 +215,7 @@ text.
 | **content** | Message body as specified by content_type and msg_type. |
 
 Here is a reference to the table caption:
-Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction) 
+Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction)
 
 
 ### 1.5.3 Lists
@@ -255,7 +284,7 @@ Note the actual backticks will not appear in the HTML format. If it's necessary 
 }
 ```
 
-Text to be highlighted as code can also be surrounded by a single "backtick" character: 
+Text to be highlighted as code can also be surrounded by a single "backtick" character:
 `code text`
 
 ## 1.6 Page Breaks
@@ -333,4 +362,3 @@ Darren | Anstee | Arbor Networks
 | Revision | Date | Editor | Changes Made |
 | :--- | :--- | :--- | :--- |
 | specname-v1.0-wd01 | yyyy-mm-dd | Editor Name | Initial working draft |
-
