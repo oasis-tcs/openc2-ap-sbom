@@ -146,6 +146,29 @@ _This section is non-normative_
 * The term "hyphen" used here refers to the ASCII hyphen or minus character, which in Unicode is "hyphen-minus", U+002D.
 
 #### 1.2.3.2 Font colors and styles
+The following color, font and font style conventions are used in this document:
+
+* A fixed width font is used for all type names, property names, and literals.
+* Property names are in bold style – **'created_at'**.
+* All examples in this document are expressed in JSON. They are in fixed width font, with straight quotes, black text and a light shaded background, and 4-space indentation. JSON examples in this document are representations of JSON Objects. They should not be interpreted as string literals. The ordering of object keys is insignificant. Whitespace before or after JSON structural characters in the examples are insignificant [[RFC8259]](#rfc8259).
+* Parts of the example may be omitted for conciseness and clarity. These omitted parts are denoted with ellipses (...).
+
+Example:
+
+redo example with sbom example
+
+```json
+{
+    "action": "deny",
+    "target": {
+        "file": {
+            "hashes": {
+                "sha256": "22fe72a34f006ea67d26bb7004e2b6941b5c3953d43ae7ec24d41b1a928a6973"
+            }
+        }
+    }
+}
+```
 
 #### 1.2.3.3 Typographic conventions
 
