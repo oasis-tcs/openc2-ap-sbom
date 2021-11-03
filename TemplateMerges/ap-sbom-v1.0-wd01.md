@@ -125,6 +125,17 @@ _This section is normative._
 * **Target**: The object of the Action, i.e., the Action is performed on the Target (e.g., IP Address).
 
 ### 1.2.2 Acronyms and abbreviations
+_This section is non-normative_
+
+| Term | Expansion |
+|:---|:---|
+| IPR | Intellectual Property Rights |
+| JADN | JSON Abstract Data Notation |
+| JSON | JavaScript Object Notation |
+| OASIS | Organization for the Advancement of Structured Information Standards |
+| RFC | Request for Comment |
+| TC | Technical Committee |
+| URI | Uniform Resource Identifier |
 
 ### 1.2.3 Document conventions
 
