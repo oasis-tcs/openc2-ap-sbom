@@ -5,9 +5,9 @@
 
 # OpenC2 Actuator Profile for Software Bill of Materials Retrieval Version 1.0
 
-## Committee Specification Draft 01
+## WIP for WD for Committee Specification Draft 01
 
-## 19 August 2021
+## 10 November 2021
 
 &nbsp;
 
@@ -174,7 +174,7 @@ text.
 | **content** | Message body as specified by content_type and msg_type. |
 
 Here is a reference to the table caption:
-Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction) 
+Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction)
 
 
 ### 1.3.3 Lists
@@ -243,7 +243,7 @@ Note the actual backticks will not appear in the HTML format. If it's necessary 
 }
 ```
 
-Text to be highlighted as code can also be surrounded by a single "backtick" character: 
+Text to be highlighted as code can also be surrounded by a single "backtick" character:
 `code text`
 
 ## 1.4 Page Breaks
