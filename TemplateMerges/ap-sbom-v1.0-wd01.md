@@ -31,8 +31,9 @@ URI list end (commented out except during publication by OASIS TC Admin) -->
 #### Technical Committee:
 [OASIS Open Command and Control (OpenC2) TC](https://www.oasis-open.org/committees/openc2/)
 
-#### Chair:
-Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
+#### CoChairs:
+- Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](https://www.sfractal.com/)
+- Michael Rosa (mjrosa@cyber.nsa.gov), [National Security Agency](https://www.nsa.gov/)
 
 #### Editor:
 Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
@@ -174,7 +175,7 @@ text.
 | **content** | Message body as specified by content_type and msg_type. |
 
 Here is a reference to the table caption:
-Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction) 
+Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction)
 
 
 ### 1.3.3 Lists
@@ -243,7 +244,7 @@ Note the actual backticks will not appear in the HTML format. If it's necessary 
 }
 ```
 
-Text to be highlighted as code can also be surrounded by a single "backtick" character: 
+Text to be highlighted as code can also be surrounded by a single "backtick" character:
 `code text`
 
 ## 1.4 Page Breaks
