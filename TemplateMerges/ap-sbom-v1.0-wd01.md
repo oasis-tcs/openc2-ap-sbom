@@ -274,16 +274,48 @@ text.
 
 -------
 
-# 3 Conformance
-<!-- Required section -->
+# 3 Conformance statements
+_This section is normative_
+This section identifies the requirements for twenty-two conformance profiles as they pertain to two conformance targets. The two conformance targets are OpenC2 Producers and OpenC2 Consumers (as defined in [Section 1.8](#18-purpose-and-scope) of this specification).
 
-(Note: The [OASIS TC Process](https://www.oasis-open.org/policies-guidelines/tc-process#wpComponentsConfClause) requires that a specification approved by the TC at the Committee Specification Public Review Draft, Committee Specification or OASIS Standard level must include a separate section, listing a set of numbered conformance clauses, to which any implementation of the specification must adhere in order to claim conformance to the specification (or any optional portion thereof). This is done by listing the conformance clauses here.
-For the definition of "conformance clause," see [OASIS Defined Terms](https://www.oasis-open.org/policies-guidelines/oasis-defined-terms-2017-05-26#dConformanceClause).
+## 3.1 Clauses Pertaining to the OpenC2 Producer Conformance Target
+All OpenC2 Producers that are conformant to this specification MUST satisfy Conformance Clause 1 and MAY satisfy one or more of Conformance Clauses 2 through 11.
 
-See "Guidelines to Writing Conformance Clauses":  
-http://docs.oasis-open.org/templates/TCHandbook/ConformanceGuidelines.html.
+### 3.1.1 Conformance Clause 1: Baseline OpenC2 Producer
+An OpenC2 Producer satisfies Baseline OpenC2 Producer conformance if:
+* 3.1.1.1 **MUST** support JSON serialization of OpenC2 Commands that are syntactically valid in accordance with the property tables presented in [Section 2.1](#21-openc2-command-components)
+* 3.1.1.2 All serializations **MUST** be implemented in a manner such that the serialization validates against and provides a one-to-one mapping to the property tables in [Section 2.1](#21-openc2-command-components) of this specification
+* 3.1.1.3 **MUST** support the use of a Transfer Specification that is capable of delivering authenticated, ordered, lossless and uniquely identified OpenC2 messages
+* 3.1.1.4 **SHOULD** support the use of one or more published OpenC2 Transfer Specifications which identify underlying transport protocols such that an authenticated, ordered, lossless, delivery of uniquely identified OpenC2 messages is provided as referenced in [Section 1](#1-introduction) of this specification
+* 3.1.1.5 **MUST** be conformant with Version 1.0 of the OpenC2 Language Specification
+* 3.1.1.6 **MUST** implement the 'query features' Command in accordance with the normative text provided in Version 1.0 of the OpenC2 Language Specification
+* 3.1.1.7 **MUST** implement the 'response_requested' Command Argument as a valid option for any Command
+* 3.1.1.8 **MUST** conform to at least one of the following conformance clauses in this specification:
+   * Conformance Clause 2
+   * Conformance Clause 3
+   * Conformance Clause 4
+   * Conformance Clause 5
 
-Remove this note before submitting for publication.)
+
+## 3.2 Clauses Pertaining to the OpenC2 Consumer Conformance Target
+All OpenC2 Consumers that are conformant to this specification MUST satisfy Conformance Clause 12 and MAY satisfy one or more of Conformance Clauses 13 through 22.
+
+### 3.2.1 Conformance Clause 12: Baseline OpenC2 Consumer
+An OpenC2 Consumer satisfies Baseline OpenC2 Consumer conformance if:
+* 3.2.1.1 **MUST** support JSON serialization of OpenC2 Commands that are syntactically valid in accordance with the property tables presented in [Section 2.1](#21-openc2-command-components)
+* 3.2.1.2 All serializations **MUST** be implemented in a manner such that the serialization validates against and provides a one-to-one mapping to the property tables in [Section 2.1](#21-openc2-command-components) of this specification
+* 3.2.1.3 **MUST** support the use of a Transfer Specification that is capable of delivering authenticated, ordered, lossless and uniquely identified OpenC2 messages
+* 3.2.1.4 **SHOULD** support the use of one or more published OpenC2 Transfer Specifications which identify underlying transport protocols such that an authenticated, ordered, lossless, delivery of uniquely identified OpenC2 messages is provided as referenced in [Section 1](#1-introduction) of this specification
+* 3.2.1.5 **MUST** be conformant with Version 1.0 of the OpenC2 Language Specification
+* 3.2.1.6 **MUST** implement the 'query features' Command in accordance with the normative text provided in version 1.0 of the OpenC2 Language Specification
+* 3.2.1.7 **MUST** implement the 'response_requested' Command Argument as a valid option for any Command
+    * 3.2.1.7.1 All Commands received with a 'response_requested' argument set to 'none' **MUST** process the Command and **MUST NOT** send a Response. This criteria supersedes all other normative text as it pertains to Responses
+    * 3.2.1.7.2 All Commands received without the 'response_requested' argument **MUST** process the Command and Response in a manner that is consistent with "response_requested":"complete"
+* 3.2.1.8 **MUST** conform to at least one of the following conformance clauses in this specification:
+    * Conformance Clause 13
+    * Conformance Clause 14
+    * Conformance Clause 15
+    * Conformance Clause 16
 
 
 -------
