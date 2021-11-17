@@ -140,24 +140,200 @@ _This section is non-normative_
 
 ### 1.2.3 Document conventions
 
-# 2 Section Heading
-text.
+# 2. OpenC2 Language Binding
 
-## 2.1 Level 2 Heading
-text.
+_This section is normative_
 
-### 2.1.1 Level 3 Heading
-text.
+This section defines the set of Actions, Targets, Specifiers, and Arguments that are meaningful in the context of an SBOM. This section also describes the appropriate format for the status and properties of a Response frame. This section is organized into three major subsections; Command Components, Response Components and Commands.
 
-#### 2.1.1.1 Level 4 Heading
-text.
+Extensions to the Language Specification are defined in accordance with [[OpenC2-Lang-v1.0]](#openc2-lang-v10), Section 3.1.5, where:
 
-##### 2.1.1.1.1 Level 5 Heading
-This is the deepest level, because six # gets transformed into a Reference tag.
+1. The unique name of the SBOM schema is `oasis-open.org/openc2/v1.0/ap-sbom`
+2. The namespace identifier (nsid) referring to the SBOM schema is:  `sbom`
+3. The definitions of and conformance requirements for these types are contained in this document
+
+## 2.1 OpenC2 Command Components
+The components of an OpenC2 Command include Actions, Targets, Actuators and associated Arguments and Specifiers. Appropriate aggregation of the components will define a Command-body that is meaningful in the context of an SBOM.
+
+This specification identifies the applicable components of an OpenC2 Command. The components of an OpenC2 Command include:
+
+* Action:  A subset of the Actions defined in the OpenC2 Language Specification that are meaningful in the context of a SBOM.
+    * This profile SHALL NOT define Actions that are external to Version 1.0 of the [OpenC2 Language Specification](#openc2-lang-v10)
+    * This profile MAY augment the definition of the Actions in the context of a SBOM
+    * This profile SHALL NOT define Actions in a manner that is inconsistent with version 1.0 of the OpenC2 Language Specification
+* Target:  A subset of the Targets and Target-Specifiers defined in Version 1.0 of the OpenC2 Language Specification that are meaningful in the context of SBOM and one Target (and its associated Specifier) that is defined in this specification
+* Arguments:  A subset of the Arguments defined in the Language Specification and a set of Arguments defined in this specification
+* Actuator:  A set of specifiers defined in this specification that are meaningful in the context of SBOM
+
+### 2.1.1 Actions
+Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language Specification which are meaningful in the context of an SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
+
+**Table 2.1.1-1. Actions Applicable to SBOM**
+
+**_Type: Action (Enumerated)_**
+
+| ID | Name | Description |
+| :--- | :--- | :--- |
+| 3 | **query** | Initiate a request for information. Used to communicate the supported options and determine the state or settings |
+
+### 2.1.2 Targets
+Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
+
+#### 2.1.2.1 Common Targets
+Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification that are applicable to SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
+
+**Table 2.1.2-1. Targets Applicable to SBOM**
+
+**_Type: Target (Choice)_**
+
+| ID | Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| 9 | **features** | Features | A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities |
+| 10 | **sbom** | Sbom | Properties of a SBOM |
+
+The semantics/ requirements as they pertain to common targets:
+* fill in if we have any
+
+#### 2.1.2.2 SBOM Targets
+The list of common Targets is extended to include the additional Targets defined in this section and referenced with the SBOM namespace.
+
+**Table 2.1.2-2. Targets Unique to SBOM**
+
+**_Type: Target (Choice)_**
+
+| ID | Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| 1024 | **fillin** | Rule-ID | Immutable identifier assigned when a rule is created. Identifies a rule to be deleted |
+
+update per https://github.com/oasis-tcs/openc2-usecases/tree/master/Cybercom-Plugfest/TestData/sbom
+
+### 2.1.3 Command Arguments
+Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.3-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.3-2 summarizes the Command Arguments that are defined in this specification.
+
+#### 2.1.3.1 Common Arguments
+Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
+
+**Table 2.1.3-1. Command Arguments applicable to SBOM**
+
+**_Type: Args (Map)_**
+
+| ID | Name | Type | # | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| 4 | **response_requested** | Response-Type | 0..1 | The type of Response required for the Action: `none`, `ack`, `status`, `complete` |
+
+proposal to delete "none" as it doesn't make sense on either Query
+
+#### 2.1.3.2 SBOM Arguments
+The list of common Command Arguments is extended to include the additional Command Arguments defined in this section and referenced with the SBOM namespace.
+
+**Table 2.1.3-2. Command Arguments Unique to SBOM**
+
+**_Type: Args (Map)_**
+
+| ID | Name | Type | # | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| n | **N** | N | 0..1 | need to add the sbom formats per plugfest examples |
+
+The semantics/requirements as they relate to SBOM arguments:
+
+* fill in about the choice of formats and list order is preference order
+
+### 2.1.4 Actuator Specifiers
+An Actuator is the entity that provides the functionality and performs the Action. The Actuator executes the Action on the Target. In the context of this profile, the Actuator is the SBOM and the presence of one or more Specifiers further refine which Actuator(s) shall execute the Action.
+
+Table 2.1.4-1 lists the Specifiers that are applicable to the SBOM Actuator. [Annex A](#annex-a-sample-commands) provides sample Commands with the use of Specifiers.
+
+The Actuator Specifiers defined in this document are referenced under the SBOM namespace.
+
+**Table 2.1.4-1. SBOM Specifiers**
+
+**_Type: Specifiers (Map)_**
+
+| ID | Name | Type | # | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | **hostname** | String | 0..1 | [[RFC1123]](#rfc1123) hostname (can be a domain name or IP address) for a particular device with SBOM functionality |
+| 2 | **named_group** | String | 0..1 | User defined collection of devices with SBOM functionality |
+| 3 | **asset_id** | String | 0..1 | Unique identifier for a particular SBOM |
+| 4 | **asset_tuple** | String | 0..10 | Unique tuple identifier for a particular SBOM consisting of a list of up to 10 strings |
+
+## 2.2 OpenC2 Response Components
+Response messages originate from the Actuator as a result of a Command.
+
+Responses associated with required Actions MUST be implemented. Implementations that include optional Actions MUST implement the RESPONSE associated with the implemented Action. Additional details regarding the Command and associated Response are captured in [Section 2.3](#23-openc2-commands). Examples are provided in [Annex A](#annex-a-sample-commands).
+
+### 2.2.1 Common Results
+Table 2.2.1-1 lists the Response Results properties defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
+
+**Table 2.2.1-1. Response Results Applicable to SBOM**
+
+**_Type: Results (Map [1..*])_**
+
+| ID | Name | Type | # | Description |
+| ---: | :--- | :--- | ---: | :--- |
+| 1 | **versions** | Version | 0..* | List of OpenC2 language versions supported by this Actuator |
+| 2 | **profiles** | ArrayOf(Nsid) | 0..1 | List of profiles supported by this Actuator |
+| 3 | **pairs** | Action-Targets | 0..* | List of targets applicable to each supported Action |
+| 4 | **rate_limit** | Number | 0..1 | Maximum number of requests per minute supported by design or policy |
+
+### 2.2.2 SBOM Results
+The list of common Response properties is extended to include the additional Response properties defined in this section and referenced with the SBOM namespace.
+
+**Table 2.2.2-1. SBOM Results**
+
+**_Type: OpenC2-Response (Map)_**
+
+| ID | Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| 1024 | **fillin** | fillin | fillin |
+
+### 2.2.3 Response Status Codes
+Table 2.2.1-2 lists the Response Status Codes defined in the OpenC2 Language Specification that are applicable to SBOM.
+
+**Table 2.2.1-2. Response Status Codes**
+
+**_Type: Status-Code (Enumerated.ID)_**
+
+| Value | Description |
+| :--- | :--- |
+| 102 | Processing. Command received but action not necessarily complete. |
+| 200 | OK. |
+| 400 | Bad Request. Unable to process Command, parsing error. |
+| 500 | Internal Error. For "response_requested" value "complete", one of the following MAY apply:<br> * Cannot access file or path<br> * Rule number currently in use<br> * Rule not updated |
+| 501 | Not implemented. For "response_requested" value "complete", one of the following MAY apply:<br> * Target not supported<br> * Option not supported<br> * Command not supported |
+
+## 2.3 OpenC2 Commands
+
+An OpenC2 Command consists of an Action/Target pair and associated Specifiers and Arguments. This section enumerates the allowed Commands and presents the associated Responses.
+
+Table 2.3-1 defines the Commands that are valid in the context of the SBOM profile. An Action (the top row in Table 2.3-1) paired with a Target (the first column in Table 2.3-1) defines a valid Command. The subsequent subsections provide the property tables applicable to each OpenC2 Command.
+
+**Table 2.3-1. Command Matrix**
+
+|   | Allow | Deny | Query | Delete | Update |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **features** |   |   | valid |   |   |
+| **sbom** |   |   | valid |   |   |
+
+Table 2.3-2 defines the Command Arguments that are allowed for a particular Command by the SBOM profile. A Command (the top row in Table 2.3-2) paired with an Argument (the first column in Table 2.3-2) defines an allowable combination. The subsection identified at the intersection of the Command/Argument provides details applicable to each Command as influenced by the Argument.
+
+**Table 2.3-2. Command Arguments Matrix**
+
+|   | Allow _target_ | Deny _target_ | Query features | Delete SBOM:rule_number | Update file |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **response_requested** | [2.3.1](#231-allow) | [2.3.2](#232-deny) | [2.3.3.1](#2331-query-features) | [2.3.4.1](#2341-delete-SBOMrule_number) | [2.3.5.1](#2351-update-file) |
+add stuff for sbom
+
+### 2.3.1 Query
+The valid Target type, associated Specifiers, and Options are summarized in [Section 2.3.3.1](#2331-query-features). Sample Commands are presented in [Annex A](#annex-a-sample-commands).
+
+#### 2.3.3.1 Query features
+The 'query features' Command MUST be implemented in accordance with Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10).
+
+#### 2.3.3.1 Query sbom
+The 'query sbom' Command MUST be implemented in accordance with fill-in-here
 
 
-## 2.2 Next Heading
-text.
+Refer to [Annex A](#annex-a-sample-commands) for sample Commands.
 
 -------
 
