@@ -5,9 +5,9 @@
 
 # OpenC2 Actuator Profile for Software Bill of Materials Retrieval Version 1.0
 
-## Committee Specification Draft 01
+## WIP for WD for Committee Specification Draft 01
 
-## 19 August 2021
+## 10 November 2021
 
 &nbsp;
 
@@ -31,8 +31,9 @@ URI list end (commented out except during publication by OASIS TC Admin) -->
 #### Technical Committee:
 [OASIS Open Command and Control (OpenC2) TC](https://www.oasis-open.org/committees/openc2/)
 
-#### Chair:
-Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
+#### CoChairs:
+- Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](https://www.sfractal.com/)
+- Michael Rosa (mjrosa@cyber.nsa.gov), [National Security Agency](https://www.nsa.gov/)
 
 #### Editor:
 Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
@@ -111,10 +112,33 @@ A TC may use other ways to generate HTML from markdown, which may generate a TOC
 
 ### 1.2.1 Definitions of terms
 
+_This section is normative._
+
+* **Action**: The task or activity to be performed (e.g., 'deny').
+* **Actuator**: The function performed by the Consumer that executes the Command (e.g., 'Stateless Packet Filtering').
+* **Argument**: A property of a Command that provides additional information on how to perform the Command, such as date/time, periodicity, duration, etc.
+* **Command**: A Message defined by an Action-Target pair that is sent from a Producer and received by a Consumer.
+* **Consumer**: A managed device / application that receives Commands. Note that a single device / application can have both Consumer and Producer capabilities.
+* **Message**: A content- and transport-independent set of elements conveyed between Consumers and Producers.
+* **Producer**: A manager application that sends Commands.
+* **Response**: A Message from a Consumer to a Producer acknowledging a Command or returning the requested resources or status to a previously received Command.
+* **Specifier**: A property or field that identifies a Target or Actuator to some level of precision.
+* **Target**: The object of the Action, i.e., the Action is performed on the Target (e.g., IP Address).
+
 ### 1.2.2 Acronyms and abbreviations
+_This section is non-normative_
+
+| Term | Expansion |
+|:---|:---|
+| IPR | Intellectual Property Rights |
+| JADN | JSON Abstract Data Notation |
+| JSON | JavaScript Object Notation |
+| OASIS | Organization for the Advancement of Structured Information Standards |
+| RFC | Request for Comment |
+| TC | Technical Committee |
+| URI | Uniform Resource Identifier |
 
 ### 1.2.3 Document conventions
-
 
 # 2 Section Heading
 text.
