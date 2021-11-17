@@ -5,9 +5,9 @@
 
 # OpenC2 Actuator Profile for Software Bill of Materials Retrieval Version 1.0
 
-## Committee Specification Draft 01
+## WIP for WD for Committee Specification Draft 01
 
-## 19 August 2021
+## 10 November 2021
 
 &nbsp;
 
@@ -31,8 +31,9 @@ URI list end (commented out except during publication by OASIS TC Admin) -->
 #### Technical Committee:
 [OASIS Open Command and Control (OpenC2) TC](https://www.oasis-open.org/committees/openc2/)
 
-#### Chair:
-Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
+#### CoChairs:
+- Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](https://www.sfractal.com/)
+- Michael Rosa (mjrosa@cyber.nsa.gov), [National Security Agency](https://www.nsa.gov/)
 
 #### Editor:
 Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
@@ -111,147 +112,34 @@ A TC may use other ways to generate HTML from markdown, which may generate a TOC
 
 ### 1.2.1 Definitions of terms
 
+_This section is normative._
+
+* **Action**: The task or activity to be performed (e.g., 'deny').
+* **Actuator**: The function performed by the Consumer that executes the Command (e.g., 'Stateless Packet Filtering').
+* **Argument**: A property of a Command that provides additional information on how to perform the Command, such as date/time, periodicity, duration, etc.
+* **Command**: A Message defined by an Action-Target pair that is sent from a Producer and received by a Consumer.
+* **Consumer**: A managed device / application that receives Commands. Note that a single device / application can have both Consumer and Producer capabilities.
+* **Message**: A content- and transport-independent set of elements conveyed between Consumers and Producers.
+* **Producer**: A manager application that sends Commands.
+* **Response**: A Message from a Consumer to a Producer acknowledging a Command or returning the requested resources or status to a previously received Command.
+* **Specifier**: A property or field that identifies a Target or Actuator to some level of precision.
+* **Target**: The object of the Action, i.e., the Action is performed on the Target (e.g., IP Address).
+
 ### 1.2.2 Acronyms and abbreviations
+_This section is non-normative_
+
+| Term | Expansion |
+|:---|:---|
+| IPR | Intellectual Property Rights |
+| JADN | JSON Abstract Data Notation |
+| JSON | JavaScript Object Notation |
+| OASIS | Organization for the Advancement of Structured Information Standards |
+| RFC | Request for Comment |
+| TC | Technical Committee |
+| URI | Uniform Resource Identifier |
 
 ### 1.2.3 Document conventions
 
-- Naming conventions
-- Font colors and styles
-- Typographic conventions
-
-## 1.3 Some markdown usage examples
-
-**Text.**
-
-Note that text paragraphs in markdown should be separated by a blank line between them -
-
-Otherwise the separate paragraphs will be joined together when the HTML is generated.
-Even if the text appears to be separate lines in the markdown source.
-
-To avoid having the usual vertical space between paragraphs,  
-append two or more space characters (or space-backslash) to the end of the lines  
-which will generate an HTML break tag instead of a new paragraph tag \
-(as demonstrated here).
-
-### 1.3.1 Figures and Captions
-
-FIGURE EXAMPLE:
-<note caption is best placed ABOVE figure, so a hyperlink to it will actually display the figure, instead of rendering the figure off the screen above the caption. The same placement should be used for table captions>
-
-###### Figure 1 -- Title of Figure
-![image-label should be meaningful](images/image_0.png) (this image is intentionally missing)
-
-###### Figure 2 -- OpenC2 Message Exchange
-![message exchange](images/image_1.png)
-
-
-### 1.3.2 Tables
-
-#### 1.3.2.1 Basic Table
-**Table 1-1. Table Label**
-
-| Item | Description |
-| :--- | :--- |
-| Item 1 | Something<br>(second line) |
-| Item 2 | Something |
-| Item 3 | Something<br>(second line) |
-| Item 4 | text |
-
-#### 1.3.2.2 Table with Three Columns and Some Bold Text
-text.
-
-| Title 1 | Title 2 | title 3 |
-| :--- | :--- | :--- |
-| something | something | something else that is a long string of text that **might** need to wrap around inside the table box and will just continue until the column divider is reached |
-| something | something | something |
-
-#### 1.3.2.3 Table with a caption which can be referenced
-
-###### Table 1-5. See reference label construction
-
-| Name | Description |
-| :--- | :--- |
-| **content** | Message body as specified by content_type and msg_type. |
-
-Here is a reference to the table caption:
-Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction)
-
-
-### 1.3.3 Lists
-
-Bulleted list:
-* bullet item 1.
-* **Bold** bullet item 2.
-* bullet item 3.
-* bullet item 4.
-
-Indented or multi-level bullet list - add two spaces per level before bullet character (* or -):
-* main bullet type
-  * Example second bullet
-    * See third level
-      * fourth level
-
-Numbered list:
-1. item 1
-2. item 2
-3. item 3
-
-Left-justified list without bullets or numbers:
-To list multiple items without full paragraph breaks between items, add space-backslash after each item except the last.
-
-### 1.3.4 Reference Label Construction
-
-REFERENCES and ANCHORS
-- in markdown source, format the Reference tags as level 6 headings like: `###### [RFC2119]`
-###### [RFC2119]
-Bradner, S., "Key words ..."
-
-- reference text has to be on a separate line below the tag
-
-- format cross-references (citations of the references) like: `see [[RFC2119](#rfc2119)]`  
-"see [[RFC2119](#rfc2119)]"  
-(note the outer square brackets in markdown will appear in the visible HTML text)
-
-- The text in the Reference tag (following ###### ) will become an HTML anchor using the following conversion rules:  
-  - punctuation marks will be dropped (including "[" )  
-  - leading white spaces will be dropped  
-  - upper case will be converted to lower  
-  - spaces between letters will be converted to a single hyphen
-
-- The same HTML anchor construction rules apply to cross-references and to section headings.  
-  - Thus, a section heading like "## 1.2 Glossary"  
-  - becomes an anchor in HTML like `<a href="#12-glossary">`  
-  - referenced in the markdown like: see [Section 1.2](#12-glossary)  
-  - in markdown: `"see [Section 1.2](#12-glossary)"`  
-  - similar HTML anchors are also used in constructing the TOC
-
-### 1.3.5 Code Blocks
-
-Text to appear as an indented code block with grey background and monospace font - use three back-ticks before and after the code block.
-
-Note the actual backticks will not appear in the HTML format. If it's necessary to display visible backticks, place a back-slash before them like: \``` .
-
-```
-{   
-    "target": {
-        "x_kmip_2.0": {
-            {"kmip_type": "json"},
-            {"operation": "RekeyKeyPair"},
-            {"name": "publicWebKey11DEC2017"}
-        }
-    }
-}
-```
-
-Text to be highlighted as code can also be surrounded by a single "backtick" character:
-`code text`
-
-## 1.4 Page Breaks
-Add horizontal rule lines where page breaks are desired in the PDF - before each major section
-- insert the line rules in markdown by inserting 3 or more hyphens on a line by themselves:  ---
-- place these before each main section in markdown (usually "#" - which generates the HTML `<h1>` tag)
-
--------
 # 2. OpenC2 Language Binding
 
 _This section is normative_
