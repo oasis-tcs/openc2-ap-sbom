@@ -5,9 +5,9 @@
 
 # OpenC2 Actuator Profile for Software Bill of Materials Retrieval Version 1.0
 
-## Committee Specification Draft 01
+## WIP for WD for Committee Specification Draft 01
 
-## 19 August 2021
+## 10 November 2021
 
 &nbsp;
 
