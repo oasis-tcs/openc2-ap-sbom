@@ -85,6 +85,37 @@ For complete copyright information please see the full Notices section in an App
 [[TOC will be inserted here]]
 
 -------
+# Agreements in Principle
+Editor's Placeholder:
+
+This section is for agreements-in-principle
+that actual text needs to added once
+(1) move to new template complete and
+(2) actual text put in right places and agreed to.
+
+## split into 2 Commands
+The SBOM AP must handle the following conditions:
+
+- "one" SBOM available in one format in one serialization
+- multiple SBOMs available (eg one for application, one for container application runs in)
+- multiple formats available (eg CycloneDX, SPDX, SWID)
+- multiple serializations available - now including JSON
+- multiple versions of application (eg SBOM for before patch and for after patch)
+- multiple versions of SBOM (eg SBOM updated with new information even though application itself didn't change)
+- SBOMs may be present on device (and hence returnable with another query command) or SBOMs may be elsewhere (eg a URI)
+
+There are more choices than when the AP was first conceived so
+a proposal to change a different approach was discussed and approved in prinicple
+The current draft contains a single query that asks
+for a single sbom
+qualified by prioritized list of preferred format/serializations
+(and no JSON serializations were available at that time).
+
+Proposal accepted to split into two queries: 
+(1) querying what SBOMs available where
+(2) query to return a specific SBOM in a specific format in a specific serialization
+
+-------
 
 # 1 Introduction
 
