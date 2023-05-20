@@ -5,9 +5,9 @@
 
 # OpenC2 Actuator Profile for Software Bill of Materials Retrieval Version 1.0
 
-## Committee Specification Draft 01
+## WIP for WD for Committee Specification Draft 01
 
-## 19 August 2021
+## 10 November 2021
 
 &nbsp;
 
@@ -31,8 +31,9 @@ URI list end (commented out except during publication by OASIS TC Admin) -->
 #### Technical Committee:
 [OASIS Open Command and Control (OpenC2) TC](https://www.oasis-open.org/committees/openc2/)
 
-#### Chair:
-Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
+#### CoChairs:
+- Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](https://www.sfractal.com/)
+- Michael Rosa (mjrosa@cyber.nsa.gov), [National Security Agency](https://www.nsa.gov/)
 
 #### Editor:
 Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfractal.com/)
@@ -84,6 +85,37 @@ For complete copyright information please see the full Notices section in an App
 [[TOC will be inserted here]]
 
 -------
+# Agreements in Principle
+Editor's Placeholder:
+
+This section is for agreements-in-principle
+that actual text needs to added once
+(1) move to new template complete and
+(2) actual text put in right places and agreed to.
+
+## split into 2 Commands
+The SBOM AP must handle the following conditions:
+
+- "one" SBOM available in one format in one serialization
+- multiple SBOMs available (eg one for application, one for container application runs in)
+- multiple formats available (eg CycloneDX, SPDX, SWID)
+- multiple serializations available - now including JSON
+- multiple versions of application (eg SBOM for before patch and for after patch)
+- multiple versions of SBOM (eg SBOM updated with new information even though application itself didn't change)
+- SBOMs may be present on device (and hence returnable with another query command) or SBOMs may be elsewhere (eg a URI)
+
+There are more choices than when the AP was first conceived so
+a proposal to change a different approach was discussed and approved in prinicple
+The current draft contains a single query that asks
+for a single sbom
+qualified by prioritized list of preferred format/serializations
+(and no JSON serializations were available at that time).
+
+Proposal accepted to split into two queries:
+(1) querying what SBOMs available where
+(2) query to return a specific SBOM in a specific format in a specific serialization
+
+-------
 
 # 1 Introduction
 
@@ -111,179 +143,273 @@ A TC may use other ways to generate HTML from markdown, which may generate a TOC
 
 ### 1.2.1 Definitions of terms
 
+_This section is normative._
+
+* **Action**: The task or activity to be performed (e.g., 'deny').
+* **Actuator**: The function performed by the Consumer that executes the Command (e.g., 'Stateless Packet Filtering').
+* **Argument**: A property of a Command that provides additional information on how to perform the Command, such as date/time, periodicity, duration, etc.
+* **Command**: A Message defined by an Action-Target pair that is sent from a Producer and received by a Consumer.
+* **Consumer**: A managed device / application that receives Commands. Note that a single device / application can have both Consumer and Producer capabilities.
+* **Message**: A content- and transport-independent set of elements conveyed between Consumers and Producers.
+* **Producer**: A manager application that sends Commands.
+* **Response**: A Message from a Consumer to a Producer acknowledging a Command or returning the requested resources or status to a previously received Command.
+* **Specifier**: A property or field that identifies a Target or Actuator to some level of precision.
+* **Target**: The object of the Action, i.e., the Action is performed on the Target (e.g., IP Address).
+
 ### 1.2.2 Acronyms and abbreviations
+_This section is non-normative_
+
+| Term | Expansion |
+|:---|:---|
+| IPR | Intellectual Property Rights |
+| JADN | JSON Abstract Data Notation |
+| JSON | JavaScript Object Notation |
+| OASIS | Organization for the Advancement of Structured Information Standards |
+| RFC | Request for Comment |
+| TC | Technical Committee |
+| URI | Uniform Resource Identifier |
 
 ### 1.2.3 Document conventions
 
-- Naming conventions
-- Font colors and styles
-- Typographic conventions
+# 2. OpenC2 Language Binding
 
-## 1.3 Some markdown usage examples
+_This section is normative_
 
-**Text.**
+This section defines the set of Actions, Targets, Specifiers, and Arguments that are meaningful in the context of an SBOM. This section also describes the appropriate format for the status and properties of a Response frame. This section is organized into three major subsections; Command Components, Response Components and Commands.
 
-Note that text paragraphs in markdown should be separated by a blank line between them -
+Extensions to the Language Specification are defined in accordance with [[OpenC2-Lang-v1.0]](#openc2-lang-v10), Section 3.1.5, where:
 
-Otherwise the separate paragraphs will be joined together when the HTML is generated.
-Even if the text appears to be separate lines in the markdown source.
+1. The unique name of the SBOM schema is `oasis-open.org/openc2/v1.0/ap-sbom`
+2. The namespace identifier (nsid) referring to the SBOM schema is:  `sbom`
+3. The definitions of and conformance requirements for these types are contained in this document
 
-To avoid having the usual vertical space between paragraphs,  
-append two or more space characters (or space-backslash) to the end of the lines  
-which will generate an HTML break tag instead of a new paragraph tag \
-(as demonstrated here).
+## 2.1 OpenC2 Command Components
+The components of an OpenC2 Command include Actions, Targets, Actuators and associated Arguments and Specifiers. Appropriate aggregation of the components will define a Command-body that is meaningful in the context of an SBOM.
 
-### 1.3.1 Figures and Captions
+This specification identifies the applicable components of an OpenC2 Command. The components of an OpenC2 Command include:
 
-FIGURE EXAMPLE:
-<note caption is best placed ABOVE figure, so a hyperlink to it will actually display the figure, instead of rendering the figure off the screen above the caption. The same placement should be used for table captions>
+* Action:  A subset of the Actions defined in the OpenC2 Language Specification that are meaningful in the context of a SBOM.
+    * This profile SHALL NOT define Actions that are external to Version 1.0 of the [OpenC2 Language Specification](#openc2-lang-v10)
+    * This profile MAY augment the definition of the Actions in the context of a SBOM
+    * This profile SHALL NOT define Actions in a manner that is inconsistent with version 1.0 of the OpenC2 Language Specification
+* Target:  A subset of the Targets and Target-Specifiers defined in Version 1.0 of the OpenC2 Language Specification that are meaningful in the context of SBOM and one Target (and its associated Specifier) that is defined in this specification
+* Arguments:  A subset of the Arguments defined in the Language Specification and a set of Arguments defined in this specification
+* Actuator:  A set of specifiers defined in this specification that are meaningful in the context of SBOM
 
-###### Figure 1 -- Title of Figure
-![image-label should be meaningful](images/image_0.png) (this image is intentionally missing)
+### 2.1.1 Actions
+Table 2.1.1-1 presents the OpenC2 Actions defined in version 1.0 of the Language Specification which are meaningful in the context of an SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
 
-###### Figure 2 -- OpenC2 Message Exchange
-![message exchange](images/image_1.png)
+**Table 2.1.1-1. Actions Applicable to SBOM**
 
+**_Type: Action (Enumerated)_**
 
-### 1.3.2 Tables
-
-#### 1.3.2.1 Basic Table
-**Table 1-1. Table Label**
-
-| Item | Description |
-| :--- | :--- |
-| Item 1 | Something<br>(second line) |
-| Item 2 | Something |
-| Item 3 | Something<br>(second line) |
-| Item 4 | text |
-
-#### 1.3.2.2 Table with Three Columns and Some Bold Text
-text.
-
-| Title 1 | Title 2 | title 3 |
+| ID | Name | Description |
 | :--- | :--- | :--- |
-| something | something | something else that is a long string of text that **might** need to wrap around inside the table box and will just continue until the column divider is reached |
-| something | something | something |
+| 3 | **query** | Initiate a request for information. Used to communicate the supported options and determine the state or settings |
 
-#### 1.3.2.3 Table with a caption which can be referenced
+### 2.1.2 Targets
+Table 2.1.2-1 summarizes the Targets defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.2-2 summarizes the Targets that are defined in this specification.
 
-###### Table 1-5. See reference label construction
+#### 2.1.2.1 Common Targets
+Table 2.1.2-1 lists the Targets defined in the OpenC2 Language Specification that are applicable to SBOM. The particular Action/Target pairs that are required or are optional are presented in [Section 2.3](#23-openc2-commands).
 
-| Name | Description |
+**Table 2.1.2-1. Targets Applicable to SBOM**
+
+**_Type: Target (Choice)_**
+
+| ID | Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| 9 | **features** | Features | A set of items such as Action/Target pairs, profiles versions, options that are supported by the Actuator. The Target is used with the query Action to determine an Actuator's capabilities |
+| 10 | **sbom** | Sbom | Properties of a SBOM |
+
+The semantics/ requirements as they pertain to common targets:
+* fill in if we have any
+
+#### 2.1.2.2 SBOM Targets
+The list of common Targets is extended to include the additional Targets defined in this section and referenced with the SBOM namespace.
+
+**Table 2.1.2-2. Targets Unique to SBOM**
+
+**_Type: Target (Choice)_**
+
+| ID | Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| 1024 | **fillin** | Rule-ID | Immutable identifier assigned when a rule is created. Identifies a rule to be deleted |
+
+update per https://github.com/oasis-tcs/openc2-usecases/tree/master/Cybercom-Plugfest/TestData/sbom
+
+### 2.1.3 Command Arguments
+Arguments provide additional precision to a Command by including information such as how, when, or where a Command is to be executed. Table 2.1.3-1 summarizes the Command Arguments defined in Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) as they relate to SBOM functionality. Table 2.1.3-2 summarizes the Command Arguments that are defined in this specification.
+
+#### 2.1.3.1 Common Arguments
+Table 2.1.3-1 lists the Command Arguments defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
+
+**Table 2.1.3-1. Command Arguments applicable to SBOM**
+
+**_Type: Args (Map)_**
+
+| ID | Name | Type | # | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| 4 | **response_requested** | Response-Type | 0..1 | The type of Response required for the Action: `none`, `ack`, `status`, `complete` |
+
+proposal to delete "none" as it doesn't make sense on either Query
+
+#### 2.1.3.2 SBOM Arguments
+The list of common Command Arguments is extended to include the additional Command Arguments defined in this section and referenced with the SBOM namespace.
+
+**Table 2.1.3-2. Command Arguments Unique to SBOM**
+
+**_Type: Args (Map)_**
+
+| ID | Name | Type | # | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| n | **N** | N | 0..1 | need to add the sbom formats per plugfest examples |
+
+The semantics/requirements as they relate to SBOM arguments:
+
+* fill in about the choice of formats and list order is preference order
+
+### 2.1.4 Actuator Specifiers
+An Actuator is the entity that provides the functionality and performs the Action. The Actuator executes the Action on the Target. In the context of this profile, the Actuator is the SBOM and the presence of one or more Specifiers further refine which Actuator(s) shall execute the Action.
+
+Table 2.1.4-1 lists the Specifiers that are applicable to the SBOM Actuator. [Annex A](#annex-a-sample-commands) provides sample Commands with the use of Specifiers.
+
+The Actuator Specifiers defined in this document are referenced under the SBOM namespace.
+
+**Table 2.1.4-1. SBOM Specifiers**
+
+**_Type: Specifiers (Map)_**
+
+| ID | Name | Type | # | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | **hostname** | String | 0..1 | [[RFC1123]](#rfc1123) hostname (can be a domain name or IP address) for a particular device with SBOM functionality |
+| 2 | **named_group** | String | 0..1 | User defined collection of devices with SBOM functionality |
+| 3 | **asset_id** | String | 0..1 | Unique identifier for a particular SBOM |
+| 4 | **asset_tuple** | String | 0..10 | Unique tuple identifier for a particular SBOM consisting of a list of up to 10 strings |
+
+## 2.2 OpenC2 Response Components
+Response messages originate from the Actuator as a result of a Command.
+
+Responses associated with required Actions MUST be implemented. Implementations that include optional Actions MUST implement the RESPONSE associated with the implemented Action. Additional details regarding the Command and associated Response are captured in [Section 2.3](#23-openc2-commands). Examples are provided in [Annex A](#annex-a-sample-commands).
+
+### 2.2.1 Common Results
+Table 2.2.1-1 lists the Response Results properties defined in the [[OpenC2-Lang-v1.0]](#openc2-lang-v10) that are applicable to SBOM.
+
+**Table 2.2.1-1. Response Results Applicable to SBOM**
+
+**_Type: Results (Map [1..*])_**
+
+| ID | Name | Type | # | Description |
+| ---: | :--- | :--- | ---: | :--- |
+| 1 | **versions** | Version | 0..* | List of OpenC2 language versions supported by this Actuator |
+| 2 | **profiles** | ArrayOf(Nsid) | 0..1 | List of profiles supported by this Actuator |
+| 3 | **pairs** | Action-Targets | 0..* | List of targets applicable to each supported Action |
+| 4 | **rate_limit** | Number | 0..1 | Maximum number of requests per minute supported by design or policy |
+
+### 2.2.2 SBOM Results
+The list of common Response properties is extended to include the additional Response properties defined in this section and referenced with the SBOM namespace.
+
+**Table 2.2.2-1. SBOM Results**
+
+**_Type: OpenC2-Response (Map)_**
+
+| ID | Name | Type | Description |
+| :--- | :--- | :--- | :--- |
+| 1024 | **fillin** | fillin | fillin |
+
+### 2.2.3 Response Status Codes
+Table 2.2.1-2 lists the Response Status Codes defined in the OpenC2 Language Specification that are applicable to SBOM.
+
+**Table 2.2.1-2. Response Status Codes**
+
+**_Type: Status-Code (Enumerated.ID)_**
+
+| Value | Description |
 | :--- | :--- |
-| **content** | Message body as specified by content_type and msg_type. |
+| 102 | Processing. Command received but action not necessarily complete. |
+| 200 | OK. |
+| 400 | Bad Request. Unable to process Command, parsing error. |
+| 500 | Internal Error. For "response_requested" value "complete", one of the following MAY apply:<br> * Cannot access file or path<br> * Rule number currently in use<br> * Rule not updated |
+| 501 | Not implemented. For "response_requested" value "complete", one of the following MAY apply:<br> * Target not supported<br> * Option not supported<br> * Command not supported |
 
-Here is a reference to the table caption:
-Please see [Table 1-5 or other meaningful label](#table-1-5-see-reference-label-construction) 
+## 2.3 OpenC2 Commands
+
+An OpenC2 Command consists of an Action/Target pair and associated Specifiers and Arguments. This section enumerates the allowed Commands and presents the associated Responses.
+
+Table 2.3-1 defines the Commands that are valid in the context of the SBOM profile. An Action (the top row in Table 2.3-1) paired with a Target (the first column in Table 2.3-1) defines a valid Command. The subsequent subsections provide the property tables applicable to each OpenC2 Command.
+
+**Table 2.3-1. Command Matrix**
+
+|   | Allow | Deny | Query | Delete | Update |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **features** |   |   | valid |   |   |
+| **sbom** |   |   | valid |   |   |
+
+Table 2.3-2 defines the Command Arguments that are allowed for a particular Command by the SBOM profile. A Command (the top row in Table 2.3-2) paired with an Argument (the first column in Table 2.3-2) defines an allowable combination. The subsection identified at the intersection of the Command/Argument provides details applicable to each Command as influenced by the Argument.
+
+**Table 2.3-2. Command Arguments Matrix**
+
+|   | Allow _target_ | Deny _target_ | Query features | Delete SBOM:rule_number | Update file |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **response_requested** | [2.3.1](#231-allow) | [2.3.2](#232-deny) | [2.3.3.1](#2331-query-features) | [2.3.4.1](#2341-delete-SBOMrule_number) | [2.3.5.1](#2351-update-file) |
+add stuff for sbom
+
+### 2.3.1 Query
+The valid Target type, associated Specifiers, and Options are summarized in [Section 2.3.3.1](#2331-query-features). Sample Commands are presented in [Annex A](#annex-a-sample-commands).
+
+#### 2.3.3.1 Query features
+The 'query features' Command MUST be implemented in accordance with Version 1.0 of the [[OpenC2-Lang-v1.0]](#openc2-lang-v10).
+
+#### 2.3.3.1 Query sbom
+The 'query sbom' Command MUST be implemented in accordance with fill-in-here
 
 
-### 1.3.3 Lists
-
-Bulleted list:
-* bullet item 1.
-* **Bold** bullet item 2.
-* bullet item 3.
-* bullet item 4.
-
-Indented or multi-level bullet list - add two spaces per level before bullet character (* or -):
-* main bullet type
-  * Example second bullet
-    * See third level
-      * fourth level
-
-Numbered list:
-1. item 1
-2. item 2
-3. item 3
-
-Left-justified list without bullets or numbers:
-To list multiple items without full paragraph breaks between items, add space-backslash after each item except the last.
-
-### 1.3.4 Reference Label Construction
-
-REFERENCES and ANCHORS
-- in markdown source, format the Reference tags as level 6 headings like: `###### [RFC2119]`
-###### [RFC2119]
-Bradner, S., "Key words ..."
-
-- reference text has to be on a separate line below the tag
-
-- format cross-references (citations of the references) like: `see [[RFC2119](#rfc2119)]`  
-"see [[RFC2119](#rfc2119)]"  
-(note the outer square brackets in markdown will appear in the visible HTML text)
-
-- The text in the Reference tag (following ###### ) will become an HTML anchor using the following conversion rules:  
-  - punctuation marks will be dropped (including "[" )  
-  - leading white spaces will be dropped  
-  - upper case will be converted to lower  
-  - spaces between letters will be converted to a single hyphen
-
-- The same HTML anchor construction rules apply to cross-references and to section headings.  
-  - Thus, a section heading like "## 1.2 Glossary"  
-  - becomes an anchor in HTML like `<a href="#12-glossary">`  
-  - referenced in the markdown like: see [Section 1.2](#12-glossary)  
-  - in markdown: `"see [Section 1.2](#12-glossary)"`  
-  - similar HTML anchors are also used in constructing the TOC
-
-### 1.3.5 Code Blocks
-
-Text to appear as an indented code block with grey background and monospace font - use three back-ticks before and after the code block.
-
-Note the actual backticks will not appear in the HTML format. If it's necessary to display visible backticks, place a back-slash before them like: \``` .
-
-```
-{   
-    "target": {
-        "x_kmip_2.0": {
-            {"kmip_type": "json"},
-            {"operation": "RekeyKeyPair"},
-            {"name": "publicWebKey11DEC2017"}
-        }
-    }
-}
-```
-
-Text to be highlighted as code can also be surrounded by a single "backtick" character: 
-`code text`
-
-## 1.4 Page Breaks
-Add horizontal rule lines where page breaks are desired in the PDF - before each major section
-- insert the line rules in markdown by inserting 3 or more hyphens on a line by themselves:  ---
-- place these before each main section in markdown (usually "#" - which generates the HTML `<h1>` tag)
+Refer to [Annex A](#annex-a-sample-commands) for sample Commands.
 
 -------
 
-# 2 Section Heading
-text.
+# 3 Conformance statements
+_This section is normative_
+This section identifies the requirements for twenty-two conformance profiles as they pertain to two conformance targets. The two conformance targets are OpenC2 Producers and OpenC2 Consumers (as defined in [Section 1.8](#18-purpose-and-scope) of this specification).
 
-## 2.1 Level 2 Heading
-text.
+## 3.1 Clauses Pertaining to the OpenC2 Producer Conformance Target
+All OpenC2 Producers that are conformant to this specification MUST satisfy Conformance Clause 1 and MAY satisfy one or more of Conformance Clauses 2 through 11.
 
-### 2.1.1 Level 3 Heading
-text.
+### 3.1.1 Conformance Clause 1: Baseline OpenC2 Producer
+An OpenC2 Producer satisfies Baseline OpenC2 Producer conformance if:
+* 3.1.1.1 **MUST** support JSON serialization of OpenC2 Commands that are syntactically valid in accordance with the property tables presented in [Section 2.1](#21-openc2-command-components)
+* 3.1.1.2 All serializations **MUST** be implemented in a manner such that the serialization validates against and provides a one-to-one mapping to the property tables in [Section 2.1](#21-openc2-command-components) of this specification
+* 3.1.1.3 **MUST** support the use of a Transfer Specification that is capable of delivering authenticated, ordered, lossless and uniquely identified OpenC2 messages
+* 3.1.1.4 **SHOULD** support the use of one or more published OpenC2 Transfer Specifications which identify underlying transport protocols such that an authenticated, ordered, lossless, delivery of uniquely identified OpenC2 messages is provided as referenced in [Section 1](#1-introduction) of this specification
+* 3.1.1.5 **MUST** be conformant with Version 1.0 of the OpenC2 Language Specification
+* 3.1.1.6 **MUST** implement the 'query features' Command in accordance with the normative text provided in Version 1.0 of the OpenC2 Language Specification
+* 3.1.1.7 **MUST** implement the 'response_requested' Command Argument as a valid option for any Command
+* 3.1.1.8 **MUST** conform to at least one of the following conformance clauses in this specification:
+   * Conformance Clause 2
+   * Conformance Clause 3
+   * Conformance Clause 4
+   * Conformance Clause 5
 
-#### 2.1.1.1 Level 4 Heading
-text.
 
-##### 2.1.1.1.1 Level 5 Heading
-This is the deepest level, because six # gets transformed into a Reference tag.
+## 3.2 Clauses Pertaining to the OpenC2 Consumer Conformance Target
+All OpenC2 Consumers that are conformant to this specification MUST satisfy Conformance Clause 12 and MAY satisfy one or more of Conformance Clauses 13 through 22.
 
-
-## 2.2 Next Heading
-text.
-
--------
-
-# 3 Conformance
-<!-- Required section -->
-
-(Note: The [OASIS TC Process](https://www.oasis-open.org/policies-guidelines/tc-process#wpComponentsConfClause) requires that a specification approved by the TC at the Committee Specification Public Review Draft, Committee Specification or OASIS Standard level must include a separate section, listing a set of numbered conformance clauses, to which any implementation of the specification must adhere in order to claim conformance to the specification (or any optional portion thereof). This is done by listing the conformance clauses here.
-For the definition of "conformance clause," see [OASIS Defined Terms](https://www.oasis-open.org/policies-guidelines/oasis-defined-terms-2017-05-26#dConformanceClause).
-
-See "Guidelines to Writing Conformance Clauses":  
-http://docs.oasis-open.org/templates/TCHandbook/ConformanceGuidelines.html.
-
-Remove this note before submitting for publication.)
+### 3.2.1 Conformance Clause 12: Baseline OpenC2 Consumer
+An OpenC2 Consumer satisfies Baseline OpenC2 Consumer conformance if:
+* 3.2.1.1 **MUST** support JSON serialization of OpenC2 Commands that are syntactically valid in accordance with the property tables presented in [Section 2.1](#21-openc2-command-components)
+* 3.2.1.2 All serializations **MUST** be implemented in a manner such that the serialization validates against and provides a one-to-one mapping to the property tables in [Section 2.1](#21-openc2-command-components) of this specification
+* 3.2.1.3 **MUST** support the use of a Transfer Specification that is capable of delivering authenticated, ordered, lossless and uniquely identified OpenC2 messages
+* 3.2.1.4 **SHOULD** support the use of one or more published OpenC2 Transfer Specifications which identify underlying transport protocols such that an authenticated, ordered, lossless, delivery of uniquely identified OpenC2 messages is provided as referenced in [Section 1](#1-introduction) of this specification
+* 3.2.1.5 **MUST** be conformant with Version 1.0 of the OpenC2 Language Specification
+* 3.2.1.6 **MUST** implement the 'query features' Command in accordance with the normative text provided in version 1.0 of the OpenC2 Language Specification
+* 3.2.1.7 **MUST** implement the 'response_requested' Command Argument as a valid option for any Command
+    * 3.2.1.7.1 All Commands received with a 'response_requested' argument set to 'none' **MUST** process the Command and **MUST NOT** send a Response. This criteria supersedes all other normative text as it pertains to Responses
+    * 3.2.1.7.2 All Commands received without the 'response_requested' argument **MUST** process the Command and Response in a manner that is consistent with "response_requested":"complete"
+* 3.2.1.8 **MUST** conform to at least one of the following conformance clauses in this specification:
+    * Conformance Clause 13
+    * Conformance Clause 14
+    * Conformance Clause 15
+    * Conformance Clause 16
 
 
 -------
