@@ -98,11 +98,14 @@ The SBOM AP must handle the following conditions:
 
 - "one" SBOM available in one format in one serialization
 - multiple SBOMs available (eg one for application, one for container application runs in)
-- multiple formats available (eg CycloneDX, SPDX, SWID)
+- multiple formats available (eg CycloneDX, SPDX, SWID) 
+    + {strike out SWID}
 - multiple serializations available - now including JSON
+    + {only json for now}
 - multiple versions of application (eg SBOM for before patch and for after patch)
 - multiple versions of SBOM (eg SBOM updated with new information even though application itself didn't change)
 - SBOMs may be present on device (and hence returnable with another query command) or SBOMs may be elsewhere (eg a URI)
+    + allow for multiple answers
 
 There are more choices than when the AP was first conceived so
 a proposal to change a different approach was discussed and approved in prinicple
@@ -113,8 +116,90 @@ qualified by prioritized list of preferred format/serializations
 
 Proposal accepted to split into two queries:
 (1) querying what SBOMs available where
+    + allow for multiple answers
+    + allow for filtering? (eg only reply with spdx)
 (2) query to return a specific SBOM in a specific format in a specific serialization
+    + only json for now
 
+Examples:
+Q1. query requesting list of sboms
+    - device is "simple" device
+      - ie not a device running different software stacks in different cpu's
+    - no filter on which sboms to return
+    - no filter on which fields to return
+R1a. response to Q1
+    - when only one sbom
+    - sbom on device
+R1b.  response to Q1
+    - when several sboms
+    - sboms only on device
+R1c.  response to Q1
+    - when only one sbom
+    - sbom only a URI elsewhere
+R1d.  response to Q1
+    - when only one sbom
+    - sbom in several places
+Q2.  query requesting specific sbom after response R1a
+R2a.  response to Q2
+Q3.  query requesting list of sboms
+    - no filter on which sboms to return
+    - filtering on which fields to return
+R3a.  response to Q3
+    - when only one sbom
+    - sbom on device
+Q4.  query requesting list of sboms
+    - filtering on which sboms to return
+    - no filter on which fields to return
+R4a.  response to Q3
+    - when many sboms, some spdx,some cdx
+    - sboms on device
+
+Example Q1: query requesting list of sboms:
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "list": []
+    }
+  }
+}
+```
+Example R1a: response to query 1 when only one sbom and sbom is on device
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["package-foo",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "supplier": ["example.com",
+                    "1783512b-1cae-4cfa-a183-3e30408bbc14"],
+            "created_at": "build",
+            "author": ["Example Foundation",
+                    ""],
+            "timestamp": "2021-10-12T07:20:50.52Z",
+            "notes": "other stuff they felt like adding"
+            }]
+        }
+    }
+  }
+}
+```
+
+example query requesting one specific sbom:
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "id": ["58156134-5547-4e4a-968f-88a33cfafc2c"]
+    }
+  }
+}
+```
 -------
 
 # 1 Introduction
