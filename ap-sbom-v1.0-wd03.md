@@ -178,28 +178,37 @@ Example R1a: response to query 1 when only one sbom and sbom is on device
             "supplier": ["example.com",
                     "1783512b-1cae-4cfa-a183-3e30408bbc14"],
             "created_at": "build",
-            "author": ["Example Foundation",
-                    ""],
+            "author": ["Joe at Example Foundation",
+                    "4d50d859-a5f7-45fa-9935-77b294aa445a"],
             "timestamp": "2021-10-12T07:20:50.52Z",
             "notes": "other stuff they felt like adding"
-            }]
-        }
+            }
+    ]
     }
-  }
 }
 ```
 
-example query requesting one specific sbom:
+Example Q2 - query requesting one specific sbom:
 ``` json
 {
   "action": "query",
   "target": {
     "sbom": {
-        "id": ["58156134-5547-4e4a-968f-88a33cfafc2c"]
+        "need to put an valid example sbom here"
     }
   }
 }
 ```
+
+Example R2a - response to query Q2
+``` json
+{
+  "status": 200,
+  "results": {
+  }
+}
+```
+
 -------
 
 # 1 Introduction
