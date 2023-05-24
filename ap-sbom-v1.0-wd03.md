@@ -121,7 +121,7 @@ Proposal accepted to split into two queries:
 (2) query to return a specific SBOM in a specific format in a specific serialization
     + only json for now
 
-Examples:
+## Examples:
 Q1. query requesting list of sboms
     - device is "simple" device
       - ie not a device running different software stacks in different cpu's
@@ -154,7 +154,7 @@ R4a.  response to Q3
     - when many sboms, some spdx,some cdx
     - sboms on device
 
-Example Q1: query requesting list of sboms:
+### Example Q1: query requesting list of sboms:
 ``` json
 {
   "action": "query",
@@ -165,47 +165,225 @@ Example Q1: query requesting list of sboms:
   }
 }
 ```
-Example R1a: response to query 1 when only one sbom and sbom is on device
+### Example R1a: response to query 1 when only one sbom and sbom is on device
 ``` json
 {
   "status": 200,
   "results": {
     "sbom_list": [{
-            "id": ["package-foo",
+            "id": ["twinkly_maha",
                     "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
             "version": "1.0.0",
-            "format": ["spdx", "2.3"],
-            "supplier": ["example.com",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json",
+            "supplier": ["sFractal.com",
                     "1783512b-1cae-4cfa-a183-3e30408bbc14"],
             "created_at": "build",
-            "author": ["Joe at Example Foundation",
+            "author": ["Duncan at sFractal",
                     "4d50d859-a5f7-45fa-9935-77b294aa445a"],
             "timestamp": "2021-10-12T07:20:50.52Z",
-            "notes": "other stuff they felt like adding"
+            "notes": "this SBOM has known unknowns"
             }
     ]
     }
 }
 ```
 
-Example Q2 - query requesting one specific sbom:
+### R1b.  response to Q1 when several sboms, sboms only on device
+note some fields optional and weren't available in this example (and saves page space).
+Ie fields might not be returned due to filter request, but they also might not be returned
+because they just weren't there.
+
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["twinkly_maha",
+                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "serialization": "json"
+        },
+        {
+            "id": ["debian.buster_slim",
+                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
+            "filename": "debian.buster_slim-cyclonedx-bom.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
+
+### R1c.  response to Q1 when only one sbom is is only a URI elsewhere
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+            }
+    ]
+    }
+}
+```
+
+
+### R1d.  response to Q1 when only one sbom, in several places
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["twinkly_maha",
+                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
+
+### Example Q2 - query requesting one specific sbom:
 ``` json
 {
   "action": "query",
   "target": {
+    "sbom": {
+        "uuid": "58156134-5547-4e4a-968f-88a33cfafc2c"
+    }
+  }
+}
+```
+
+### Example R2a - response to query Q2
+``` json
+{
+  "status": 200,
+  "results": {
     "sbom": {
         "need to put an valid example sbom here"
     }
   }
 }
 ```
+### Q3.  query requesting list of sboms, 
+    - no filter on which sboms to return
+    - filtering on which fields to return
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "list": [],
+        "response_fields": ["id", "filename", "version"]
+    }
+  }
+}
+```
 
-Example R2a - response to query Q2
+### R3a.  response to Q3
+    - when only one sbom
+    - sbom on device
 ``` json
 {
   "status": 200,
   "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0"
+            }
+    ]
+    }
+}
+```
+
+
+### Q4.  query requesting list of sboms
+    - filtering on which sboms to return
+    - no filter on which fields to return
+
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "list": ["format": "cyclonedx"]
+    }
   }
+}
+```
+
+
+### R4a.  response to Q3
+    - when many sboms, some spdx,some cdx
+    - sboms on device
+
+In this case (same input data as earlier that had 3 sboms, 2 cdx, 1 spdx),
+only returned the cdx
+
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["debian.buster_slim",
+                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
+            "filename": "debian.buster_slim-cyclonedx-bom.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        }
+    ]
+    }
 }
 ```
 
