@@ -7,7 +7,7 @@
 
 ## WIP for WD for Committee Specification Draft 01
 
-## 10 November 2021
+## 25 May 2023
 
 &nbsp;
 
@@ -40,13 +40,16 @@ Duncan Sparrell (duncan@sfractal.com), [sFractal Consulting LLC](http://www.sfra
 
 #### Additional artifacts:
 This prose specification is one component of a Work Product that also includes:
-* XML schemas: (list file names or directory name)
+* JADN schemas: 
+   - list file names once we have them
 * Other parts (list titles and/or file names)
 * `(Note: Any normative computer language definitions that are part of the Work Product, such as XML instances, schemas and Java(TM) code, including fragments of such, must be (a) well formed and valid, (b) provided in separate plain text files, (c) referenced from the Work Product; and (d) where any definition in these separate files disagrees with the definition found in the specification, the definition in the separate file prevails. Remove this note before submitting for publication.)`
 
 #### Related work:
 This specification is related to:
 * _Open Command and Control (OpenC2) Language Specification Version 1.0_. Edited by Jason Romano and Duncan Sparrell. Latest stage: https://docs.oasis-open.org/openc2/oc2ls/v1.0/oc2ls-v1.0.html.
+* _Open Command and Control (OpenC2) Architecture Specification Version 1.0_. Edited by Duncan Sparrell. Latest stage: https://docs.oasis-open.org/openc2/oc2arch/v1.0/oc2arch-v1.0.html
+* _Specification for JSON Abstract Data Notation (JADN) Version 1.0_. Edited by David Kemp. Latest stage: https://docs.oasis-open.org/openc2/jadn/v1.0/cs01/jadn-v1.0-cs01.html
 
 #### Abstract:
 Open Command and Control (OpenC2) is a concise and extensible language to enable the command and control of cyber defense components, subsystems and/or systems in a manner that is agnostic of the underlying products, technologies, transport mechanisms or other aspects of the implementation. Software Bill of Materials (SBoM) is an emerging set of standards for identifying and listing software components, information about those components, and supply chain relationships between them. This profile defines the Actions, Targets, Specifiers and Options that are consistent with the version 1.0 of the OpenC2 Language Specification ([OpenC2-Lang-v1.0]) in the context of Software Bill of Materials retrieval.
@@ -71,7 +74,7 @@ When referencing this specification the following citation format should be used
 _OpenC2 Actuator Profile for Software Bill of Materials Retrieval Version 1.0_. Edited by Duncan Sparrell. 19 August 2021. OASIS Committee Specification Draft 01. https://docs.oasis-open.org/openc2/ap-sbom/v1.0/csd01/ap-sbom-v1.0-csd01.html. Latest stage: https://docs.oasis-open.org/openc2/ap-sbom/v1.0/ap-sbom-v1.0.html.
 
 #### Notices
-Copyright © OASIS Open 2021. All Rights Reserved.
+Copyright © OASIS Open 2023. All Rights Reserved.
 
 Distributed under the terms of the OASIS [IPR Policy](https://www.oasis-open.org/policies-guidelines/ipr).
 
@@ -98,11 +101,14 @@ The SBOM AP must handle the following conditions:
 
 - "one" SBOM available in one format in one serialization
 - multiple SBOMs available (eg one for application, one for container application runs in)
-- multiple formats available (eg CycloneDX, SPDX, SWID)
+- multiple formats available (eg CycloneDX, SPDX, SWID) 
+    + {strike out SWID}
 - multiple serializations available - now including JSON
+    + {only json for now}
 - multiple versions of application (eg SBOM for before patch and for after patch)
 - multiple versions of SBOM (eg SBOM updated with new information even though application itself didn't change)
 - SBOMs may be present on device (and hence returnable with another query command) or SBOMs may be elsewhere (eg a URI)
+    + allow for multiple answers
 
 There are more choices than when the AP was first conceived so
 a proposal to change a different approach was discussed and approved in prinicple
@@ -111,9 +117,278 @@ for a single sbom
 qualified by prioritized list of preferred format/serializations
 (and no JSON serializations were available at that time).
 
-Proposal accepted to split into two queries: 
+Proposal accepted to split into two queries:
 (1) querying what SBOMs available where
+    + allow for multiple answers
+    + allow for filtering? (eg only reply with spdx)
 (2) query to return a specific SBOM in a specific format in a specific serialization
+    + only json for now
+
+## Examples:
+Q1. query requesting list of sboms
+    - device is "simple" device
+      - ie not a device running different software stacks in different cpu's
+    - no filter on which sboms to return
+    - no filter on which fields to return
+R1a. response to Q1
+    - when only one sbom
+    - sbom on device
+R1b.  response to Q1
+    - when several sboms
+    - sboms only on device
+R1c.  response to Q1
+    - when only one sbom
+    - sbom only a URI elsewhere
+R1d.  response to Q1
+    - when only one sbom
+    - sbom in several places
+Q2.  query requesting specific sbom after response R1a
+R2a.  response to Q2
+Q3.  query requesting list of sboms
+    - no filter on which sboms to return
+    - filtering on which fields to return
+R3a.  response to Q3
+    - when only one sbom
+    - sbom on device
+Q4.  query requesting list of sboms
+    - filtering on which sboms to return
+    - no filter on which fields to return
+R4a.  response to Q3
+    - when many sboms, some spdx,some cdx
+    - sboms on device
+
+### Example Q1: query requesting list of sboms:
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "list": []
+    }
+  }
+}
+```
+### Example R1a: response to query 1 when only one sbom and sbom is on device
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json",
+            "supplier": ["sFractal.com",
+                    "1783512b-1cae-4cfa-a183-3e30408bbc14"],
+            "created_at": "build",
+            "author": ["Duncan at sFractal",
+                    "4d50d859-a5f7-45fa-9935-77b294aa445a"],
+            "timestamp": "2021-10-12T07:20:50.52Z",
+            "notes": "this SBOM has known unknowns"
+            }
+    ]
+    }
+}
+```
+
+### R1b.  response to Q1 when several sboms, sboms only on device
+note some fields optional and weren't available in this example (and saves page space).
+Ie fields might not be returned due to filter request, but they also might not be returned
+because they just weren't there.
+
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["twinkly_maha",
+                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "serialization": "json"
+        },
+        {
+            "id": ["debian.buster_slim",
+                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
+            "filename": "debian.buster_slim-cyclonedx-bom.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
+
+### R1c.  response to Q1 when only one sbom is is only a URI elsewhere
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+            }
+    ]
+    }
+}
+```
+
+
+### R1d.  response to Q1 when only one sbom, in several places
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["twinkly_maha",
+                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
+
+### Example Q2 - query requesting one specific sbom:
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "uuid": "58156134-5547-4e4a-968f-88a33cfafc2c"
+    }
+  }
+}
+```
+
+### Example R2a - response to query Q2
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom": {
+        "need to put an valid example sbom here"
+    }
+  }
+}
+```
+### Q3.  query requesting list of sboms, 
+    - no filter on which sboms to return
+    - filtering on which fields to return
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "list": [],
+        "response_fields": ["id", "filename", "version"]
+    }
+  }
+}
+```
+
+### R3a.  response to Q3
+    - when only one sbom
+    - sbom on device
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0"
+            }
+    ]
+    }
+}
+```
+
+
+### Q4.  query requesting list of sboms
+    - filtering on which sboms to return
+    - no filter on which fields to return
+
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "list": ["format": "cyclonedx"]
+    }
+  }
+}
+```
+
+
+### R4a.  response to Q3
+    - when many sboms, some spdx,some cdx
+    - sboms on device
+
+In this case (same input data as earlier that had 3 sboms, 2 cdx, 1 spdx),
+only returned the cdx
+
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["debian.buster_slim",
+                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
+            "filename": "debian.buster_slim-cyclonedx-bom.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
 
 -------
 
@@ -522,7 +797,7 @@ Darren | Anstman | Big Networks
 
 <!-- Required section. Do not modify. -->
 
-Copyright © OASIS Open 2021. All Rights Reserved.
+Copyright © OASIS Open 2023. All Rights Reserved.
 
 All capitalized terms in the following text have the meanings assigned to them in the OASIS Intellectual Property Rights Policy (the "OASIS IPR Policy"). The full [Policy](https://www.oasis-open.org/policies-guidelines/ipr) may be found at the OASIS website.
 
