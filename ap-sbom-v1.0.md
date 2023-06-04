@@ -120,9 +120,20 @@ qualified by prioritized list of preferred format/serializations
 Proposal accepted to split into two queries:
 (1) querying what SBOMs available where
     + allow for multiple answers
-    + allow for filtering? (eg only reply with spdx)
+    + no filtering for now
 (2) query to return a specific SBOM in a specific format in a specific serialization
     + only json for now
+
+Proposal (to be discussed):
+A distinction will be made between the SBOM AP and the PAC AP:
+* SBOM AP will be for SBOMs resident on the device (or links to those SBOMs) FOR THE SOFTWARE ON THAT DEVICE
+* PAC AP will be for SBOMs resident in the PAC (or links to those SBOMs) FOR SOFTWARE ON OTHER DEVICES
+
+This allows simplification for SBOM AP and obviates the need for filtering on the sbom-list query.
+I.e. the SBOM AP will always return all SBOMs to the sbom-list query.
+This will remove Q3, Q4, and Q5 that were previously in Appendix E 
+because they all contain filters more appropriate for PAC AP.
+Commands in examples were simplified as well.
 
 Examples implementing the above changes are now available in Appendix E.
 
@@ -535,8 +546,6 @@ The following subsections contain:
 Q1. query requesting list of sboms
     - device is "simple" device
       - ie not a device running different software stacks in different cpu's
-    - no filter on which sboms to return
-    - no filter on which fields to return
 R1a. response to Q1
     - when only one sbom
     - sbom on device
@@ -551,28 +560,13 @@ R1d.  response to Q1
     - sbom in several places
 Q2.  query requesting specific sbom after response R1a
 R2a.  response to Q2
-Q3.  query requesting list of sboms
-    - no filter on which sboms to return
-    - filtering on which fields to return
-R3a.  response to Q3
-    - when only one sbom
-    - sbom on device
-Q4.  query requesting list of sboms
-    - filtering on which sboms to return
-    - no filter on which fields to return
-R4a.  response to Q3
-    - when many sboms, some spdx,some cdx
-    - sboms on device
+
 
 ### Example Q1: query requesting list of sboms:
 ``` json
 {
   "action": "query",
-  "target": {
-    "sbom": {
-        "list": []
-    }
-  }
+  "target": "sbom_list"
 }
 ```
 ### Example R1a: response to query 1 when only one sbom and sbom is on device
@@ -661,7 +655,6 @@ because they just weren't there.
 }
 ```
 
-
 ### R1d.  response to Q1 when only one sbom, in several places
 ``` json
 {
@@ -713,94 +706,6 @@ because they just weren't there.
   }
 }
 ```
-### Q3.  query requesting list of sboms, 
-    - no filter on which sboms to return
-    - filtering on which fields to return
-``` json
-{
-  "action": "query",
-  "target": {
-    "sbom": {
-        "list": [],
-        "response_fields": ["id", "filename", "version"]
-    }
-  }
-}
-```
-
-### R3a.  response to Q3
-    - when only one sbom
-    - sbom on device
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "version": "1.0.0"
-            }
-    ]
-    }
-}
-```
-
-
-### Q4.  query requesting list of sboms
-    - filtering on which sboms to return
-    - no filter on which fields to return
-
-``` json
-{
-  "action": "query",
-  "target": {
-    "sbom": {
-        "list": ["format": "cyclonedx"]
-    }
-  }
-}
-```
-
-
-### R4a.  response to Q3
-    - when many sboms, some spdx,some cdx
-    - sboms on device
-
-In this case (same input data as earlier that had 3 sboms, 2 cdx, 1 spdx),
-only returned the cdx
-
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        },
-        {
-            "id": ["debian.buster_slim",
-                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
-            "filename": "debian.buster_slim-cyclonedx-bom.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        }
-    ]
-    }
-}
-```
-
-
-## E.1 Subsection title
-
-### E.1.1 Sub-subsection
 
 -------
 
