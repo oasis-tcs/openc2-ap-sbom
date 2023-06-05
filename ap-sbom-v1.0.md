@@ -120,275 +120,22 @@ qualified by prioritized list of preferred format/serializations
 Proposal accepted to split into two queries:
 (1) querying what SBOMs available where
     + allow for multiple answers
-    + allow for filtering? (eg only reply with spdx)
+    + no filtering for now
 (2) query to return a specific SBOM in a specific format in a specific serialization
     + only json for now
 
-## Examples:
-Q1. query requesting list of sboms
-    - device is "simple" device
-      - ie not a device running different software stacks in different cpu's
-    - no filter on which sboms to return
-    - no filter on which fields to return
-R1a. response to Q1
-    - when only one sbom
-    - sbom on device
-R1b.  response to Q1
-    - when several sboms
-    - sboms only on device
-R1c.  response to Q1
-    - when only one sbom
-    - sbom only a URI elsewhere
-R1d.  response to Q1
-    - when only one sbom
-    - sbom in several places
-Q2.  query requesting specific sbom after response R1a
-R2a.  response to Q2
-Q3.  query requesting list of sboms
-    - no filter on which sboms to return
-    - filtering on which fields to return
-R3a.  response to Q3
-    - when only one sbom
-    - sbom on device
-Q4.  query requesting list of sboms
-    - filtering on which sboms to return
-    - no filter on which fields to return
-R4a.  response to Q3
-    - when many sboms, some spdx,some cdx
-    - sboms on device
+Proposal (to be discussed):
+A distinction will be made between the SBOM AP and the PAC AP:
+* SBOM AP will be for SBOMs resident on the device (or links to those SBOMs) FOR THE SOFTWARE ON THAT DEVICE
+* PAC AP will be for SBOMs resident in the PAC (or links to those SBOMs) FOR SOFTWARE ON OTHER DEVICES
 
-### Example Q1: query requesting list of sboms:
-``` json
-{
-  "action": "query",
-  "target": {
-    "sbom": {
-        "list": []
-    }
-  }
-}
-```
-### Example R1a: response to query 1 when only one sbom and sbom is on device
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json",
-            "supplier": ["sFractal.com",
-                    "1783512b-1cae-4cfa-a183-3e30408bbc14"],
-            "created_at": "build",
-            "author": ["Duncan at sFractal",
-                    "4d50d859-a5f7-45fa-9935-77b294aa445a"],
-            "timestamp": "2021-10-12T07:20:50.52Z",
-            "notes": "this SBOM has known unknowns"
-            }
-    ]
-    }
-}
-```
+This allows simplification for SBOM AP and obviates the need for filtering on the sbom-list query.
+I.e. the SBOM AP will always return all SBOMs to the sbom-list query.
+This will remove Q3, Q4, and Q5 that were previously in Appendix E 
+because they all contain filters more appropriate for PAC AP.
+Commands in examples were simplified as well.
 
-### R1b.  response to Q1 when several sboms, sboms only on device
-note some fields optional and weren't available in this example (and saves page space).
-Ie fields might not be returned due to filter request, but they also might not be returned
-because they just weren't there.
-
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        },
-        {
-            "id": ["twinkly_maha",
-                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
-            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["spdx", "2.3"],
-            "serialization": "json"
-        },
-        {
-            "id": ["debian.buster_slim",
-                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
-            "filename": "debian.buster_slim-cyclonedx-bom.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        }
-    ]
-    }
-}
-```
-
-### R1c.  response to Q1 when only one sbom is is only a URI elsewhere
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-            }
-    ]
-    }
-}
-```
-
-
-### R1d.  response to Q1 when only one sbom, in several places
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        },
-        {
-            "id": ["twinkly_maha",
-                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
-            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["spdx", "2.3"],
-            "serialization": "json"
-        }
-    ]
-    }
-}
-```
-
-### Example Q2 - query requesting one specific sbom:
-``` json
-{
-  "action": "query",
-  "target": {
-    "sbom": {
-        "uuid": "58156134-5547-4e4a-968f-88a33cfafc2c"
-    }
-  }
-}
-```
-
-### Example R2a - response to query Q2
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom": {
-        "need to put an valid example sbom here"
-    }
-  }
-}
-```
-### Q3.  query requesting list of sboms, 
-    - no filter on which sboms to return
-    - filtering on which fields to return
-``` json
-{
-  "action": "query",
-  "target": {
-    "sbom": {
-        "list": [],
-        "response_fields": ["id", "filename", "version"]
-    }
-  }
-}
-```
-
-### R3a.  response to Q3
-    - when only one sbom
-    - sbom on device
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "version": "1.0.0"
-            }
-    ]
-    }
-}
-```
-
-
-### Q4.  query requesting list of sboms
-    - filtering on which sboms to return
-    - no filter on which fields to return
-
-``` json
-{
-  "action": "query",
-  "target": {
-    "sbom": {
-        "list": ["format": "cyclonedx"]
-    }
-  }
-}
-```
-
-
-### R4a.  response to Q3
-    - when many sboms, some spdx,some cdx
-    - sboms on device
-
-In this case (same input data as earlier that had 3 sboms, 2 cdx, 1 spdx),
-only returned the cdx
-
-``` json
-{
-  "status": 200,
-  "results": {
-    "sbom_list": [{
-            "id": ["twinkly_maha",
-                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
-            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        },
-        {
-            "id": ["debian.buster_slim",
-                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
-            "filename": "debian.buster_slim-cyclonedx-bom.json",
-            "location": "localhost",
-            "version": "1.0.0",
-            "format": ["cyclonedx", "1.4"],
-            "serialization": "json"
-        }
-    ]
-    }
-}
-```
+Examples implementing the above changes are now available in Appendix E.
 
 -------
 
@@ -449,6 +196,8 @@ _This section is non-normative_
 # 2. OpenC2 Language Binding
 
 _This section is normative_
+
+** Editor's Note ** add text here to reference JADN files and refer back to (or better yet, repeat) JADN wins statement earlier in this doc
 
 This section defines the set of Actions, Targets, Specifiers, and Arguments that are meaningful in the context of an SBOM. This section also describes the appropriate format for the status and properties of a Response frame. This section is organized into three major subsections; Command Components, Response Components and Commands.
 
@@ -756,7 +505,11 @@ Note: A Work Product approved by the TC must include a list of people who partic
 
 Substantial contributions to this document from the following individuals are gratefully acknowledged:
 
-Participant Name, Affiliation or "Individual Member"
+* David Kemp, NSA
+* David Lemire, HII
+* Duncan Sparrell, sFractal Consulting
+* Mike Rosa, NSA
+
 
 ## C.2 Participants
 
@@ -785,11 +538,174 @@ Darren | Anstman | Big Networks
 
 -------
 
-# Appendix E. Example Appendix with subsections
+# Appendix E. Command Examples
+This appendix contains example commands and example responses
+to/from a device with SBOM AP functionality.
 
-## E.1 Subsection title
+The following subsections contain:
+Q1. query requesting list of sboms
+    - device is "simple" device
+      - ie not a device running different software stacks in different cpu's
+R1a. response to Q1
+    - when only one sbom
+    - sbom on device
+R1b.  response to Q1
+    - when several sboms
+    - sboms only on device
+R1c.  response to Q1
+    - when only one sbom
+    - sbom only a URI elsewhere
+R1d.  response to Q1
+    - when only one sbom
+    - sbom in several places
+Q2.  query requesting specific sbom after response R1a
+R2a.  response to Q2
 
-### E.1.1 Sub-subsection
+
+### Example Q1: query requesting list of sboms:
+``` json
+{
+  "action": "query",
+  "target": "sbom_list"
+}
+```
+### Example R1a: response to query 1 when only one sbom and sbom is on device
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json",
+            "supplier": ["sFractal.com",
+                    "1783512b-1cae-4cfa-a183-3e30408bbc14"],
+            "created_at": "build",
+            "author": ["Duncan at sFractal",
+                    "4d50d859-a5f7-45fa-9935-77b294aa445a"],
+            "timestamp": "2021-10-12T07:20:50.52Z",
+            "notes": "this SBOM has known unknowns"
+            }
+    ]
+    }
+}
+```
+
+### R1b.  response to Q1 when several sboms, sboms only on device
+note some fields optional and weren't available in this example (and saves page space).
+Ie fields might not be returned due to filter request, but they also might not be returned
+because they just weren't there.
+
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "58156134-5547-4e4a-968f-88a33cfafc2c"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["twinkly_maha",
+                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "serialization": "json"
+        },
+        {
+            "id": ["debian.buster_slim",
+                    "caff7de1-c0a8-4913-a4c6-8993db102428"],
+            "filename": "debian.buster_slim-cyclonedx-bom.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
+
+### R1c.  response to Q1 when only one sbom is is only a URI elsewhere
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+            }
+    ]
+    }
+}
+```
+
+### R1d.  response to Q1 when only one sbom, in several places
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom_list": [{
+            "id": ["twinkly_maha",
+                    "b1d09495-3d12-4642-a111-3ed733a3c6a9"],
+            "filename": "twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "location": "https://twinklymaha.example.com/.well-known/sbom/twinkly_maha.0.9.0-cyclonedx-sbom.1.0.0.json",
+            "version": "1.0.0",
+            "format": ["cyclonedx", "1.4"],
+            "serialization": "json"
+        },
+        {
+            "id": ["twinkly_maha",
+                    "564694c2-3b10-488a-9e50-5b2d0a2443d1"],
+            "filename": "twinkly_maha.0.9.0-spdx-sbom.1.0.0.json",
+            "location": "localhost",
+            "version": "1.0.0",
+            "format": ["spdx", "2.3"],
+            "serialization": "json"
+        }
+    ]
+    }
+}
+```
+
+### Example Q2 - query requesting one specific sbom:
+``` json
+{
+  "action": "query",
+  "target": {
+    "sbom": {
+        "uuid": "58156134-5547-4e4a-968f-88a33cfafc2c"
+    }
+  }
+}
+```
+
+### Example R2a - response to query Q2
+``` json
+{
+  "status": 200,
+  "results": {
+    "sbom": {
+        "need to put an valid example sbom here"
+    }
+  }
+}
+```
 
 -------
 
